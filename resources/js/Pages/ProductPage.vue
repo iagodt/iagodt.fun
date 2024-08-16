@@ -1,11 +1,6 @@
 <template>
     <link rel="stylesheet"
         href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@40,400,0,0" />
-    <link rel="stylesheet"
-        href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@24,400,0,0" />
-    <link rel="stylesheet"
-        href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200" />
-    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200" />
     <div class="main-container">
         <div class="gallery-container">
             <Carousel id="gallery" :items-to-show="1" :wrap-around="false" v-model="currentSlide">
@@ -26,16 +21,20 @@
                 </template>
             </Carousel>
 
+            <div class="ItemDescription-Container">
+                <div class="htmlDiv" v-html="ItemData.Description"></div>
+            </div>
         </div>
         <div class="infos-container">
             <div class="Title">
-                <span class="Item-name">{{ ItemData.name }}</span>
-                <span v-if="ItemData.discount < 0 || ItemData.discount != ''" class="Item-discount">{{ ItemData.discount
+                <span v-if="ItemData.discount != null" class="Item-discount">{{ ItemData.discount
                     +
                     '%OFF' }}</span>
+                <span class="Item-name">{{ ItemData.name }}</span>
+                
             </div>
             <div class="Prices">
-                <div v-if="ItemData.discount < 0 || ItemData.discount != ''" class="Item-price">{{ 'R$ ' +
+                <div v-if="ItemData.discount != null" class="Item-price">{{ 'R$ ' +
                     ItemData.Price }}
                 </div>
                 <div class="Item-discountedPrice">{{ 'R$ ' + (ItemData.Price-(ItemData.Price*(1*(ItemData.discount/100)))).toFixed(2) }}</div>
@@ -99,12 +98,12 @@
                 <div class="shipping-error" v-if="cepError == true">
                     Desculpe o cep fornecido nao foi encontrado
                 </div>
-            </div><!--                                            TRUE TRUE                  TRUE FALSE          FALSE FALSE  -->
-            <div class="store-infos" :style=" [cepError ? (shipping ? {'margin-top': '3em'} : {'margin-top': '10em'}) : (shipping ? {'margin-top': '2em'} : {'margin-top': '11em'})]">
+            </div><!--  :style=" [cepError ? (shipping ? {'margin-top': '3em'} : {'margin-top': '10em'}) : (shipping ? {'margin-top': '2em'} : {'margin-top': '11em'})]"  -->
+            <div class="store-infos" >
                 <div class="store-item">
                     <span id="store-icon" class="material-symbols-outlined">
-verified_user
-</span>
+                    verified_user
+                    </span>
                     <div class="store-label">
                         <p class="store-title">SITE SEGURO</p>
                         <p class="store-text">Certificado SSL de Segurança</p>
@@ -130,13 +129,28 @@ verified_user
                 </div>
             </div>
         </div>
+        <section class="suggest_section">
+            <div class="suggest-container">
+                <div class="suggest_title">Produtos Relacionados</div>
+                <div class="suggest_Itens">
+                        <Carousel id="suggest_carousel" :items-to-show="2" :wrap-around="true" v-model="currentSuggest">
+                            <Slide class="suggest_carousel" v-for="slide in ItemImages" :key="slide" style="width: fit-content;">
+                                <ItemCard class="suggest_item" v-for="item in suggests" :Item="item"/>
+                            </Slide>
+                            <template #addons>
+                                <Navigation />
+                            </template>
+                        </Carousel>
+                </div>
+            </div>
+        </section>
+        
     </div>
-    <div class="ItemDescription-Container">
-        <div v-html="ItemData.Description"></div>
-    </div>
+    
 </template>
 <script>
 import { Carousel, Slide, Navigation } from 'vue3-carousel'
+import ItemCard from '@/components/ItemCard.vue';
 import 'vue3-carousel/dist/carousel.css'
 import axios from 'axios';
 export default {
@@ -145,9 +159,11 @@ export default {
         Carousel,
         Slide,
         Navigation,
+        ItemCard
     },
     data() {
         return {
+            currentSuggest:0,
             currentSlide: 0,
             ItemData: null,
             ItemImages: null,
@@ -155,7 +171,8 @@ export default {
             shipping: false,
             cepInfo: null,
             cepError: null,
-            shippingPrice: 32.50
+            shippingPrice: 32.50,
+            suggests: null
 
         }
 
@@ -192,7 +209,6 @@ export default {
                     _this.cepError = true
                 })
             
-            console.log(this.shipping,this.cepError)
         },
 
         subQuantity(){
@@ -203,6 +219,18 @@ export default {
         slideTo(val) {
             this.currentSlide = val
         },
+        async getSuggests(){
+            const _this = this
+            await axios({
+                    method: 'get',
+                    url: `/api/itens/getSuggests?category=${this.ItemData.Category}`
+                }).then(function (response) {
+                    _this.suggests = response.data
+                })
+                //console.log(this.suggests)
+        }
+        
+        ,
         getImages() {
             const _this = this
 
@@ -228,37 +256,56 @@ export default {
         },
         getItem: async function () {
             const _this = this
-            var id = this.$route.params.id
             var product = await globalThis.location.pathname.split('/')[2]
-            if (id == null) {
-                console.log('by name')
                 await axios({
                     method: 'get',
-                    url: `/api/itens/get?name=${product}`
+                    url: `/api/itens/get?id=${product}`
                 }).then(function (response) {
                     _this.ItemData = response.data
 
                 })
-            } else {
-                console.log('by id')
-                await axios({
-                    method: 'get',
-                    url: `/api/itens/get?id=${id}`
-                }).then(function (response) {
-                    _this.ItemData = response.data
-                })
-            }
-
+            
         }
     },
     async created() {
+        
         await this.getItem()
         this.getImages()
+        await this.getSuggests()
     }
 }
 </script>
 
 <style scoped>
+.suggest_title{
+    text-align: center;
+    font-size: 28px;
+    font-style: normal;
+    font-weight: bold;
+    margin-top: 2em;
+    margin-bottom: 1em;
+}
+.suggest_item{
+    min-height: 36;
+    margin-left: 1em;
+    margin-right: 1em;
+}
+.suggest_section{
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 119em;
+}
+.suggest-container{
+    width: 83em;
+}
+
+
+
+.ItemDescription-Container{
+    align-items: center;
+    display: flex;
+}
 .shipping-title{
     margin: 0px;
     font-style: normal;
@@ -502,19 +549,17 @@ box-shadow: rgba(50, 50, 93, 0.25) 0px 2px 5px -1px, rgba(0, 0, 0, 0.3) 0px 1px 
 .Title {
     display: flex;
     flex-wrap: wrap;
-    justify-content: center;
+    text-align: center;
     align-items: center;
 }
 
 .Item-discount {
-    margin-top: -3.5em;
     background-color: black;
     color: #fafafa;
     border-radius: 15px;
     font-weight: 1000;
     padding: 0.5em;
     font-family: system-ui;
-    margin-inline-start: 7em;;
 }
 
 .Item-name {
@@ -527,6 +572,7 @@ box-shadow: rgba(50, 50, 93, 0.25) 0px 2px 5px -1px, rgba(0, 0, 0, 0.3) 0px 1px 
     display: flex;
     color: #1a1a1a;
     justify-content: center;
+    flex-wrap: wrap;
     margin-top: 11em
 }
 
@@ -558,6 +604,25 @@ box-shadow: rgba(50, 50, 93, 0.25) 0px 2px 5px -1px, rgba(0, 0, 0, 0.3) 0px 1px 
 }
 </style>
 <style>
+#suggest_carousel > button.carousel__prev{
+    margin-left: -10%;
+}
+#suggest_carousel > button.carousel__next{
+    margin-right: -10%;
+}
+
+#suggest_carousel > button.carousel__prev,
+#suggest_carousel > button.carousel__next{
+    border-radius: 100%;
+    width: 50px;
+    height: 50px;
+    background-color: #fafafa;
+    color: #000;
+    border: #000 solid;
+}
+
+
+
 .carousel__prev,
 .carousel__next {
     margin: 0px;

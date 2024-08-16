@@ -1,8 +1,8 @@
 <?php return array (
-  0 => 'hashing',
-  2 => 'view',
-  10 => 'broadcasting',
-  12 => 'cors',
+  3 => 'cors',
+  4 => 'hashing',
+  9 => 'view',
+  11 => 'broadcasting',
   'app' => 
   array (
     'name' => 'Laravel',
@@ -645,6 +645,34 @@
     'same_site' => 'lax',
     'partitioned' => false,
   ),
+  'cors' => 
+  array (
+    'paths' => 
+    array (
+      0 => 'api/*',
+      1 => 'sanctum/csrf-cookie',
+    ),
+    'allowed_methods' => 
+    array (
+      0 => '*',
+    ),
+    'allowed_origins' => 
+    array (
+      0 => '*',
+    ),
+    'allowed_origins_patterns' => 
+    array (
+    ),
+    'allowed_headers' => 
+    array (
+      0 => '*',
+    ),
+    'exposed_headers' => 
+    array (
+    ),
+    'max_age' => 0,
+    'supports_credentials' => false,
+  ),
   'hashing' => 
   array (
     'driver' => 'bcrypt',
@@ -725,34 +753,6 @@
         'driver' => 'null',
       ),
     ),
-  ),
-  'cors' => 
-  array (
-    'paths' => 
-    array (
-      0 => 'api/*',
-      1 => 'sanctum/csrf-cookie',
-    ),
-    'allowed_methods' => 
-    array (
-      0 => '*',
-    ),
-    'allowed_origins' => 
-    array (
-      0 => '*',
-    ),
-    'allowed_origins_patterns' => 
-    array (
-    ),
-    'allowed_headers' => 
-    array (
-      0 => '*',
-    ),
-    'exposed_headers' => 
-    array (
-    ),
-    'max_age' => 0,
-    'supports_credentials' => false,
   ),
   'blade-heroicons' => 
   array (

@@ -25,6 +25,11 @@ class ItensController extends Controller
         }
         return Itens::where("id",$id)->get()->first();
     }
+
+    public function getSuggests(Request $request){
+        return Itens::where("category",$request->category)->get()->all();
+
+    }
     /**
      * Store a newly created resource in storage.
      */

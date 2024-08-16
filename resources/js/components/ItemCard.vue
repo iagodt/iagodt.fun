@@ -1,7 +1,7 @@
 <template>
     <div class="product-card">
         <div v-if="Item.discount != ''|| Item.discount > 0" class="discount">{{ Item.discount+'% OFF' }}</div>
-        <RouterLink :to="{ name: 'ProductPage', params: { product: Item.name, id: Item.id }}" class="product-link">
+        <a :href="$router.resolve({ name: 'ProductPage', params: { product: Item.id, id: Item.id }}).href" class="product-link">
             <img v-if="Item.discount != ''|| Item.discount > 0" :src="'/storage/'+Item.Icon" :alt="Item.name" class="product-image" />
             <img v-else :src="'/storage/'+Item.Icon" :alt="Item.name" class="product-image" style="border-top-left-radius: 10px; border-top-right-radius: 10px;"/>
             <div class="product-info">
@@ -13,7 +13,7 @@
                 <div class="installments">{{ Item.installment }}</div>
 
             </div>
-        </RouterLink>
+        </a>
         <div  class="buttons-div">
             <button class="buy-button">COMPRAR</button>
             <button class="cart-button">ADICIONAR AO CARRINHO</button>

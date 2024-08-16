@@ -1,6 +1,7 @@
 <template>
     <div id="app">
-      <router-view style="margin-top: 2rem;"></router-view>
+      <router-view></router-view>
+      <Footer></Footer>
       <div class="navbar-div">
         <NavBar />
         <div class="categories-container">
@@ -18,12 +19,13 @@
   </template>
   
 <script>
+import Footer from "@/components/Footer.vue";
 import NavBar from "@/components/NavBar.vue";
 import CategoriesCard from "@/components/CategoriesCard.vue";
 import axios from "axios";
   export default {
     name: 'App',
-    components: {CategoriesCard,NavBar},
+    components: {CategoriesCard,NavBar,Footer},
     data(){
     return{
         categories: null

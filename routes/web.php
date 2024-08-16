@@ -13,8 +13,7 @@ Route::get('api/highlights/get',[HighlightsController::class, 'index']);
 Route::get('api/carousel/get', [CarouselBannerController::class, 'index']);
 Route::get('api/itens/index', [ItensController::class, 'index']);
 Route::get('api/itens/get', [ItensController::class, 'get']);
-
-
+Route::get('api/itens/getSuggests', [ItensController::class, 'getSuggests']);
 
 
 
