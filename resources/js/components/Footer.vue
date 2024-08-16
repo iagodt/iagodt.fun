@@ -47,6 +47,9 @@
     </div>
 </template>
 <style scoped>
+.footer{
+    margin-top: 2em;
+}
 .socialIcon{
     margin-right: 1em;
 }
