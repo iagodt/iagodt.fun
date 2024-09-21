@@ -1,23 +1,26 @@
 <template>
     <div class="product-card">
-        <div v-if="Item.discount != ''|| Item.discount > 0" class="discount">{{ Item.discount+'% OFF' }}</div>
+        <div v-if="Item.discount != null" class="discount">{{ Item.discount+'% OFF' }}</div>
         <a :href="$router.resolve({ name: 'ProductPage', params: { product: Item.id, id: Item.id }}).href" class="product-link">
-            <img v-if="Item.discount != ''|| Item.discount > 0" :src="'/storage/'+Item.Icon" :alt="Item.name" class="product-image" />
+            <img v-if="Item.discount != null" :src="'/storage/'+Item.Icon" :alt="Item.name" class="product-image" />
             <img v-else :src="'/storage/'+Item.Icon" :alt="Item.name" class="product-image" style="border-top-left-radius: 10px; border-top-right-radius: 10px;"/>
             <div class="product-info">
                 <h3 class="product-name">{{ Item.name }}</h3>
                 <div class="prices">
-                    <span v-if="Item.discount < 0 || Item.discount != ''" class="original-price">{{ 'R$ '+Item.Price }}</span>
+                    <span v-if="Item.discount != null" class="original-price">{{ 'R$ '+Item.Price }}</span>
                     <span class="discounted-price">{{'R$ '+(Item.Price-(Item.Price*(1*(Item.discount/100)))).toFixed(2) }}</span>
                 </div>
                 <div class="installments">{{ Item.installment }}</div>
 
             </div>
         </a>
-        <div  class="buttons-div">
-            <button class="buy-button">COMPRAR</button>
-            <button class="cart-button">ADICIONAR AO CARRINHO</button>
+        <div class="buttons-container">
+            <div  class="buttons-div">
+                <button class="buy-button">COMPRAR</button>
+                <button v-on:click="addToCart(Item.id)" class="cart-button">ADICIONAR AO CARRINHO</button>
+            </div>
         </div>
+        
         
 
     </div>
@@ -25,16 +28,35 @@
 
 
 <script>
+import axios from "axios";
 export default {
     props: ['Item'],
-
+    methods:{
+        addToCart: async function (item){
+            const _this = this
+            await axios({
+                method: 'get',
+                url: `/api/cart/add?item=${item}`
+            })
+        }
+    }
 }
 </script>
 
 
 <style scoped>
 .prices{
-    font-family: 'Times New Roman', Times, serif;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    text-wrap: nowrap;
+    font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif
+}
+.buttons-container{
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-end;
+    height: 100%;
 }
 .buttons-div {
     display: flex;
@@ -46,12 +68,12 @@ export default {
 }
 
 .product-card {
+    box-shadow: rgba(50, 50, 93, 0.25) 0px 6px 12px -2px, rgba(0, 0, 0, 0.3) 0px 3px 7px -3px;
     display: flex;
     font-style: normal;
     color: #1a1a1a;
-    border: 1px solid #a8a8a8;
     border-radius: 10px;
-    max-width: 300px;
+    max-width: 350px;
     text-align: center;
     flex-direction: column;
     padding-bottom: 2em;
@@ -64,28 +86,25 @@ export default {
 }
 
 .product-info {
-
     margin-top: 20px;
 }
 
 .product-name {
+    padding-left: 1em;
+    padding-right: 1em;
     font-size: 1.2em;
     margin-bottom: 10px;
 }
 
-
-.prices {
-    margin: 10px 0;
-}
-
 .original-price {
+    font-size: 24px;
     text-decoration: line-through;
     color: #888;
-    margin-right: 1em;
 }
 
 .discounted-price {
-    font-size: 1.5em;
+    font-weight: 600;
+    font-size: 36px;
     color: #1a1a1a;
 }
 

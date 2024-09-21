@@ -2,6 +2,8 @@
 
 namespace App\Http\Controllers;
 
+
+use App\Models\Itens;
 use App\Models\Categories;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
@@ -23,6 +25,12 @@ class CategoryController extends Controller
 
         return $output;
         
+    }
+
+    public function getItensByCategory(Request $request){
+        $category = $request->category;
+        $categoryID = Categories::where('title',$category)->get()[0]['id'];
+        return Itens::where('category',$categoryID)->get();
     }
 
     /**

@@ -1,10 +1,10 @@
 <template>
     <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200" />
-    <router-link :to="getRouterLink(category)" class="cat-item">
+    <a :href="$router.resolve({ name: 'CategoryPage', params: {category: category.title }}).href" class="cat-item">
         
         <p>{{ category.title }}</p>
 
-    </router-link>
+    </a>
    
 </template>
 <script>

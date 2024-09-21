@@ -363,6 +363,42 @@
       '/home/iagodt/htdocs/iagodt.fun/public/storage' => '/home/iagodt/htdocs/iagodt.fun/storage/app/public',
     ),
   ),
+  'jwt' => 
+  array (
+    'secret' => 'G9Squ5u0DEPnNNvYbemDmrUO5JEDc3ojR9EpY66wxDagBshIc7lQ1En5mrAygGCy',
+    'keys' => 
+    array (
+      'public' => NULL,
+      'private' => NULL,
+      'passphrase' => NULL,
+    ),
+    'ttl' => 60,
+    'refresh_ttl' => 20160,
+    'algo' => 'HS256',
+    'required_claims' => 
+    array (
+      0 => 'iss',
+      1 => 'iat',
+      2 => 'exp',
+      3 => 'nbf',
+      4 => 'sub',
+      5 => 'jti',
+    ),
+    'persistent_claims' => 
+    array (
+    ),
+    'lock_subject' => true,
+    'leeway' => 0,
+    'blacklist_enabled' => true,
+    'blacklist_grace_period' => 0,
+    'decrypt_cookies' => false,
+    'providers' => 
+    array (
+      'jwt' => 'Tymon\\JWTAuth\\Providers\\JWT\\Lcobucci',
+      'auth' => 'Tymon\\JWTAuth\\Providers\\Auth\\Illuminate',
+      'storage' => 'Tymon\\JWTAuth\\Providers\\Storage\\Illuminate',
+    ),
+  ),
   'logging' => 
   array (
     'default' => 'stack',

@@ -22,6 +22,7 @@ class Itens extends Model
         'Image4',
         'Image5',
         'Image6',
-        'installment'
+        'installment',
+        'Home'
     ];
 }

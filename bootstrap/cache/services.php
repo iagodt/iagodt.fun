@@ -41,8 +41,9 @@
     37 => 'NunoMaduro\\Collision\\Adapters\\Laravel\\CollisionServiceProvider',
     38 => 'Termwind\\Laravel\\TermwindServiceProvider',
     39 => 'RyanChandler\\BladeCaptureDirective\\BladeCaptureDirectiveServiceProvider',
-    40 => 'App\\Providers\\AppServiceProvider',
-    41 => 'App\\Providers\\Filament\\AskaPanelProvider',
+    40 => 'Tymon\\JWTAuth\\Providers\\LaravelServiceProvider',
+    41 => 'App\\Providers\\AppServiceProvider',
+    42 => 'App\\Providers\\Filament\\AskaPanelProvider',
   ),
   'eager' => 
   array (
@@ -72,8 +73,9 @@
     23 => 'NunoMaduro\\Collision\\Adapters\\Laravel\\CollisionServiceProvider',
     24 => 'Termwind\\Laravel\\TermwindServiceProvider',
     25 => 'RyanChandler\\BladeCaptureDirective\\BladeCaptureDirectiveServiceProvider',
-    26 => 'App\\Providers\\AppServiceProvider',
-    27 => 'App\\Providers\\Filament\\AskaPanelProvider',
+    26 => 'Tymon\\JWTAuth\\Providers\\LaravelServiceProvider',
+    27 => 'App\\Providers\\AppServiceProvider',
+    28 => 'App\\Providers\\Filament\\AskaPanelProvider',
   ),
   'deferred' => 
   array (

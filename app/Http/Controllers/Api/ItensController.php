@@ -30,6 +30,9 @@ class ItensController extends Controller
         return Itens::where("category",$request->category)->get()->all();
 
     }
+    public function getHome(Request $request){
+        
+    }
     /**
      * Store a newly created resource in storage.
      */

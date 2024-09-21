@@ -10,11 +10,13 @@ use Filament\Forms\Components\FileUpload;
 use Filament\Forms\Components\RichEditor;
 use Filament\Forms\Components\Select;
 use Filament\Forms\Components\TextInput;
+use Filament\Forms\Components\Toggle;
 use Filament\Forms\Form;
 use Filament\Resources\Resource;
 use Filament\Tables;
 use Filament\Tables\Columns\ImageColumn;
 use Filament\Tables\Columns\TextColumn;
+use Filament\Tables\Columns\ToggleColumn;
 use Filament\Tables\Table;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\SoftDeletingScope;
@@ -41,6 +43,7 @@ class ItensResource extends Resource
                 FileUpload::make('Image4')->image()->directory('item-images'),
                 FileUpload::make('Image5')->image()->directory('item-images'),
                 FileUpload::make('Image6')->image()->directory('item-images'),
+                Toggle::make('HOME'),
                 TextInput::make('installment'),
                 TextInput::make('discount'),
                 RichEditor::make('Description')->required()
@@ -55,6 +58,7 @@ class ItensResource extends Resource
                 ImageColumn::make('Icon'),
                 TextColumn::make('name')->searchable(),
                 TextColumn::make('Price')->sortable(),
+                ToggleColumn::make('HOME'),
                 TextColumn::make('discount')->sortable()
             ])
             ->filters([
