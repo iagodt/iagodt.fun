@@ -110,7 +110,7 @@
     array (
       'web' => 
       array (
-        'driver' => 'session',
+        'driver' => 'jwt',
         'provider' => 'users',
       ),
     ),
@@ -499,18 +499,18 @@
   ),
   'mail' => 
   array (
-    'default' => 'log',
+    'default' => 'smtp',
     'mailers' => 
     array (
       'smtp' => 
       array (
         'transport' => 'smtp',
         'url' => NULL,
-        'host' => '127.0.0.1',
-        'port' => '2525',
-        'encryption' => NULL,
-        'username' => NULL,
-        'password' => NULL,
+        'host' => 'smtp.mailgun.org',
+        'port' => '587',
+        'encryption' => 'tls',
+        'username' => 'passwordrecovery@support.iagodt.fun',
+        'password' => '6e8ce310a2738580dab93e93be7bf5c6-3724298e-62493a3f',
         'timeout' => NULL,
         'local_domain' => 'iagodt.fun',
       ),
@@ -561,7 +561,7 @@
     ),
     'from' => 
     array (
-      'address' => 'hello@example.com',
+      'address' => 'Laravel@iagodt.fun',
       'name' => 'Laravel',
     ),
     'markdown' => 
@@ -656,6 +656,18 @@
         'bot_user_oauth_token' => NULL,
         'channel' => NULL,
       ),
+    ),
+    'mailgun' => 
+    array (
+      'domain' => 'support.iagodt.fun',
+      'secret' => '291d720b02611e6c44687c1a3ed2ca7c-3724298e-6fb77fa3',
+      'endpoint' => 'api.mailgun.net',
+    ),
+    'google' => 
+    array (
+      'client_id' => '1019681572521-vbvhakkegnv49fdjlbldnqeqgijg8l8f.apps.googleusercontent.com',
+      'client_secret' => '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',
+      'redirect' => 'https://iagodt.fun/auth/google/callback',
     ),
   ),
   'session' => 

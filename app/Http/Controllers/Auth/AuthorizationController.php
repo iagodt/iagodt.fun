@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Http\Controllers\auth;
+namespace App\Http\Controllers\Auth;
 
 use App\Models\User;
 use Illuminate\Http\Request;
@@ -10,9 +10,6 @@ use Tymon\JWTAuth\Facades\JWTAuth;
 
 class AuthorizationController extends Controller{
 
-    public function teste(Request $request){
-        return 'testeseaea';
-    }
     public function register(Request $request){
         
         
@@ -28,7 +25,7 @@ class AuthorizationController extends Controller{
     }
 
     public function login(Request $request){
-        $credentials = $request->only('username', 'password');
+        $credentials = $request->only('email', 'password');
         $token = JWTAuth::attempt($credentials);
         if(!$token = JWTAuth::attempt($credentials)) {
             return response()->json(['error' => 'Credenciais invalidas'], 401);
@@ -40,4 +37,15 @@ class AuthorizationController extends Controller{
         ]);
         
     }
+
+    public function googleLogin(){
+        $user = auth()->user();
+        $token = auth()->refresh();
+
+        return response()->json([
+            'user'=>$user,
+            'Token'=>$token
+        ]);
+    }
+     
 }

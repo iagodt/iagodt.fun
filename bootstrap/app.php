@@ -14,7 +14,8 @@ return Application::configure(basePath: dirname(__DIR__))
     ->withMiddleware(function (Middleware $middleware) {
         //
         $middleware->validateCsrfTokens([
-            'auth/*'
+            'auth/*',
+            'password/reset'
         ]); 
         $middleware->group('JWTAuth',[authJwt::class]);
     })

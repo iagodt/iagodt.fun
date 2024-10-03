@@ -4,8 +4,10 @@ use App\Http\Controllers\Api\CarouselBannerController;
 use App\Http\Controllers\Api\CartController;
 use App\Http\Controllers\Api\HighlightsController;
 use App\Http\Controllers\Api\ItensController;
-use App\Http\Controllers\auth\AuthorizationController;
-use Illuminate\Foundation\Http\Middleware\VerifyCsrfToken;
+use App\Http\Controllers\Auth\AuthorizationController;
+use App\Http\Controllers\Auth\GoogleController;
+use App\Http\Controllers\Auth\ResetPasswordController;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\ApplicationController;
 use App\Http\Controllers\CategoryController;
@@ -29,11 +31,18 @@ Route::get('api/cart/index', [CartController::class, 'getItensOnCart']);
 
 Route::post('auth/register', [AuthorizationController::class, 'register']);
 Route::post('auth/login', [AuthorizationController::class, 'login']);
+Route::post('auth/forgot-password', [ResetPasswordController::class, 'sendResetLinkEmail'])->name('password.request');
+Route::post('auth/recovery-password', [ResetPasswordController::class, 'reset'])->name('password.reset');
+Route::get('auth/google/redirect', [GoogleController::class, 'redirect']);
+Route::get('auth/google/callback', [GoogleController::class, 'callback']);
 
 Route::group(['middleware' => 'JWTAuth'], function (){
     //rotas com jwtAuth
+    Route::get('auth/google/login', [AuthorizationController::class, 'googleLogin']);
+    Route::get('api/usercart/add', [CartController::class, 'userAdd']);
+    Route::get('api/usercart/get', [CartController::class, 'userGet']);
+    Route::get('api/usercart/remove', [CartController::class, 'userRemove']);
 
-    Route::get('api/notauth',[AuthorizationController::class, 'teste']);
 });
 
 

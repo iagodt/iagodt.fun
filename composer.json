@@ -11,7 +11,12 @@
         "php": "^8.2",
         "filament/filament": "^3.2.0",
         "laravel/framework": "^11.9",
+        "laravel/socialite": "^5.16",
         "laravel/tinker": "^2.9",
+        "laravel/ui": "^4.5",
+        "mailgun/mailgun-php": "^4.3",
+        "nyholm/psr7": "^1.8",
+        "symfony/http-client": "^7.1",
         "tymon/jwt-auth": "^2.1"
     },
     "require-dev": {

@@ -1,159 +1,157 @@
 <template>
-    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200" />
-    <div class="Register-page">
-        <div class="register-form">
-            <h1>Criar uma conta</h1>
-            <form class="form-container" @submit.prevent="register">
-                <div>
-                    <input type="text" id="username" v-model="formData.name" placeholder="Nome de usuario:" required></input>
-                </div>
-                <div>
-                    <input type="email" id="email" placeholder="Email:" v-model="formData.email" required>
-                </div>
-                <div class="password-div">
-                    <input type="password" id="password" placeholder="Senha:" v-model="formData.password" required>
-                    <div class="show-password" id="show-password">
-                        
-                    <span v-on:click="ViewPassword('password')" id="viewPasword" class="material-symbols-outlined">visibility</span> Mostrar senha
-                    </div>
-                </div>
-                <div id="confirmation-div" class="password-div">
-                    <input type="password" id="password_confirmation" placeholder="Confirmar Senha:"
-                        v-model="formData.password_confirmation" required>
-                        <div class="show-password">
-                            
-                    <span v-on:click="ViewPassword('password_confirmation')" id="viewPasword" class="material-symbols-outlined">visibility</span> Mostrar senha
-                        </div>
-                </div>
-                <button type="submit">Criar conta</button>
-            </form>
-            <div v-if="errors.length">
-                <h2>Erros:</h2>
-                <ul>
-                    <li v-for="(error, index) in errors" :key="index">{{ error }}</li>
-                </ul>
+    <div class="LoginPage">
+        <div id="login-popup" class="popup">
+        <h2>Cadastre-se</h2>
+        <form class="login-form" @submit.prevent="register" >
+            <div class="form-group">
+                <input type="text" id="username" v-model="username" name="username" placeholder="Nome de usuario" required>
             </div>
+            <div class="form-group">
+                <input type="text" id="emailTel" v-model="emailTel" name="username" placeholder="Email ou Telefone" required>
+            </div>
+            <div class="form-group">
+                <input type="password" id="password" v-model="password" name="password" placeholder="Senha" required>
+            </div>
+            <div class="form-group">
+                <input type="password" id="ConfirmPassword" v-model="ConfirmPassword" name="password" placeholder="Confirme a Senha" required>
+            </div>
+            <button type="submit" class="button">Resgistrar</button>
+        </form>
+        <div class="oauth">
+          <h2 class="oauth-text">Entrar com:</h2>
+          <img class="oauth-img" src="https://upload.wikimedia.org/wikipedia/commons/c/c1/Google_%22G%22_logo.svg">
         </div>
     </div>
-
+    </div>
+    
 </template>
 
 <script>
 import axios from 'axios';
+import { mapActions } from 'vuex';
 
-export default {
-    data() {
-        return {
-            formData: {
-                username: '',
-                email: '',
-                password: '',
-                password_confirmation: '',
-            },
-            errors: [],
-        };
-    },
-    methods: {
-        async register() {
-            try {
-                const response = await axios.post('/register', this.formData);
-
-                // Se o registro for bem-sucedido, redirecione para a página inicial
-                window.location.href = '/';
-            } catch (error) {
-                // Se houver erros, exiba-os na tela
-                this.errors = error.response.data.errors;
-            }
-        },
-        ViewPassword: function(id){
-            if(document.getElementById(id).type == 'password'){
-                document.getElementById(id).type = 'text'
-            }else{
-                document.getElementById(id).type = 'password'
-            }
+export default{
+    data(){
+        return{
+            username: '',
+            emailTel: '',
+            password: '',
+            ConfirmPassword: ''
         }
     },
-};
+    methods: {
+        ...mapActions({ Login: 'login' }),
+        async register(){
+            await axios({
+                method: 'post',
+                url: '/auth/register',
+                data: this.registerData()
+
+            }).then(function(response){
+                if(response.status == 200){
+
+                }
+            })
+            let userdata = this.registerData()
+            await this.Login({email: userdata.email, password: userdata.password})
+            this.$router.push('/account')
+        },
+        verifyEmailOrTel() {
+            let k = document.getElementById('emailTel').value.toString()
+            if (k.toLowerCase().match(
+                /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|.(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/
+            )) {
+                // email valido
+                return true
+            }
+            if (!isNaN(k) && k != '') {
+                if(k.match(/^[1-9]{2}(?:[2-8]|9[0-9])[0-9]{3}[0-9]{4}$/)){
+                    //tel valido
+                    return true
+                }
+            }
+            alert('Email ou telefone invalido, para telefones ultilize apenas numeros')
+
+        },
+        registerData(){
+            if(this.checkPassword()){
+                if(this.verifyEmailOrTel()){
+                    return {
+                    username: this.username,
+                    email: this.emailTel,
+                    password: this.password
+                }
+                }
+                
+            }
+        },  
+        checkPassword(){
+            if(this.password == this.ConfirmPassword){
+                return true
+            }
+            else{
+                alert('As senhas não coincidem')
+                return false
+            }
+        }
+    }
+}
 </script>
 
 <style scoped>
-.show-password{
-    font-weight: 700;
+.LoginPage{
+    zoom: 1.5;
     display: flex;
-    align-items: center;
-}
-#show-password{
-    margin-bottom: 1em;
-}
-#email,#username,#confirmation-div{
-    margin-bottom: 2em;
-}
-#viewPasword{
-    width: fit-content;
-    font-size: 2em;
-}
-#viewPasword:hover{
-    cursor: pointer;
-}
-.password-div{
-    margin-bottom: 0px;
-    display: flex;
-    flex-direction: column;
-}
-.form-container{
-    display: flex;
-    flex-direction: column;
-    font-size: 24px;
-}
-.Register-page {
-    display: flex;
-    flex-direction: column;
-    height: 56em;
-
+    height: 32em;
+    justify-content: center;
 }
 
-.register-form {
-    display: flex;
-    flex-direction: column;
-    color: #000;
-    margin: 0 auto;
-    padding: 20px;
-    border-radius: 5px;
-    gap: 4em;
+.register-link:hover{
+  cursor: pointer;
+}
+.oauth-img:hover{
+  cursor: pointer;
+}
+.login-form,.oauth{
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+.popup {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  color: #000;
+  background-color: #fff;
+  padding: 20px;
+  border-radius: 5px;
 }
 
-.register-form h1 {
-    text-align: center;
-    font-size: 58px;
-    margin-bottom: 20px;
+
+.form-group {
+  margin-bottom: 15px;
 }
 
-.register-form input {
-    box-shadow: rgba(14, 30, 37, 0.12) 0px 2px 4px 0px, rgba(14, 30, 37, 0.32) 0px 2px 16px 0px;
-    font-size: larger;
-    width: 45em;
-    padding: 10px;
-    border-radius: 15px;
+.form-group label {
+  display: block;
+  margin-bottom: 5px;
 }
 
-.register-form button {
-    font-size: 36px;
-    background-color: #000;
-    color: #fafafa;
-    padding: 10px 20px;
-    border: transparent 5px solid;
-    border-radius: 25px;
-    cursor: pointer;
+.form-group input {
+  width: 30em;
+  padding: 10px;
+  border: 1px solid #ccc;
+  border-radius: 3px;
+  box-sizing: border-box;
 }
 
-.register-form button:hover {
-    background-color: #fafafa;
-    color: #000;
-    border: #000 5px solid;
-}
-
-.register-form ul {
-    list-style: none;
-    padding: 0;
+.button {
+  background-color: #000;
+  color: #fafafa;
+  padding: 10px 20px;
+  border: none;
+  width: 30em;
+  border-radius: 20px;
+  cursor: pointer;
 }
 </style>

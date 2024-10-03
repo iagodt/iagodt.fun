@@ -1,15 +1,18 @@
 <?php
 
 namespace App\Http\Controllers\Api;
+use App\Models\cart_itens;
+use App\Models\carts;
 use App\Models\Itens;
+use DB;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
+use Illuminate\Support\Facades\Auth;
 
 class CartController extends Controller{
     public function getCart(Request $request){
         return $request->session()->get('cart');
-    }   
-    
+    }       
     public function addOnCart(Request $request){
         $item = $request->item;
         if($request->session()->exists('cart')){
@@ -23,7 +26,6 @@ class CartController extends Controller{
         $request->session()->put('cart',$CartArray);
 
     }
-
     public function removeOfCart(Request $request){
         $item = $request->item;
         if($item){
@@ -35,7 +37,6 @@ class CartController extends Controller{
             return response(json_encode(['Error' => 'Payload is required']),400) ;
         }
     }
-
     public function clearCart(Request $request){
         $request->session()->forget('cart');
         
@@ -53,5 +54,47 @@ class CartController extends Controller{
         }
         
         
+    }
+
+    public function userAdd(Request $request){
+        $userCart = carts::firstOrCreate(['user_id' => Auth::id()]);
+        $quantity = $request->quantity ?? 1;
+        cart_itens::updateOrCreate(
+            [
+                'cart_id' => $userCart->id,
+                'product_id' => $request->product_id
+            ],
+            ['quantity' => DB::raw("quantity + {$quantity}")]
+            );
+        
+
+    }
+
+    public function userRemove(Request $request){
+        $userCart = carts::where('user_id', Auth::id())->value('id');
+        cart_itens::where('cart_id', $userCart)
+        ->where('product_id', $request->product_id)->delete();
+    }
+    public function userGet(Request $request){
+        $userCart = carts::where('user_id', Auth::id())->value('id');
+        $itensOnCart = cart_itens::where('cart_id',$userCart)->get();
+        $itensArray = [];
+
+        foreach($itensOnCart as $item){
+            $item = [
+                'id' => $item->id,
+                'product_id' =>$item->product_id,
+                'quantity' =>$item->quantity,
+
+            ];
+
+            array_push($itensArray,$item);
+        }
+        return $itensArray;
+        
+        
+        
+         
+         
     }
 }

@@ -1,7 +1,7 @@
 <template>
     <div class="product-card">
         <div v-if="Item.discount != null" class="discount">{{ Item.discount+'% OFF' }}</div>
-        <a :href="$router.resolve({ name: 'ProductPage', params: { product: Item.id, id: Item.id }}).href" class="product-link">
+        <a :href="$router.resolve({ name: 'ProductPage', params: { product: Item.id}}).href" class="product-link">
             <img v-if="Item.discount != null" :src="'/storage/'+Item.Icon" :alt="Item.name" class="product-image" />
             <img v-else :src="'/storage/'+Item.Icon" :alt="Item.name" class="product-image" style="border-top-left-radius: 10px; border-top-right-radius: 10px;"/>
             <div class="product-info">

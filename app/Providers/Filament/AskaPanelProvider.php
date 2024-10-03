@@ -53,6 +53,7 @@ class AskaPanelProvider extends PanelProvider
             ])
             ->authMiddleware([
                 Authenticate::class,
-            ]);
+            ])
+            ;
     }
 }

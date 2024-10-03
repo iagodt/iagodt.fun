@@ -3,8 +3,8 @@
       <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200" />
       <div class="navbar-container">
         <div class="brand-div">
-            <a href="/" class="navbar-brand">Tedy</a>
-            <a href="/" class="navbar-brand">Winter</a>
+            <a v-on:click="setHome" class="navbar-brand">Tedy</a>
+            <a v-on:click="setHome" class="navbar-brand">Winter</a>
         </div>
         <div class="search-bar">
           <input type="search" class="search-input" name="item-search" id="search" placeholder="O que você está buscando?">
@@ -78,17 +78,14 @@
           
         </div>
     </div>
-
-    <LoginPopUp v-if="loginstatus == false"/>
 </template>
 
 <script>
 import CategoriesCard from "@/components/CategoriesCard.vue";
 import axios from "axios";
-import LoginPopUp from "@/components/loginPopUp.vue";
 export default {
 name: 'Navbar',
-components: {CategoriesCard, LoginPopUp},
+components: {CategoriesCard},
 data(){
   return{
     loginstatus: null,
@@ -101,14 +98,10 @@ data(){
 },
 methods:{
   loginSet(){
-    switch(this.loginstatus){
-      case null:
-        this.loginstatus = false
-        break
-      case false:
-        this.loginstatus = null
-        break
-    }
+    this.$router.push('/account')
+  },
+  setHome(){
+    this.$router.push('/')
   },
   PriceCalculator(){
     const _this = this
@@ -179,6 +172,9 @@ methods:{
 <style scoped>
 @import url('https://fonts.googleapis.com/css2?family=Bodoni+Moda:opsz,wght@6..96,400..900&display=swap');
 
+.nav-link:hover,.navbar-brand:hover{
+  cursor: pointer;
+}
 .cart-image{
   height: 100%;
   border-radius: 20px;
