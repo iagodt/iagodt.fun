@@ -6,7 +6,6 @@ namespace App\Http\Controllers\Auth;
 use App\Http\Controllers\Controller;
 use Hash;
 use Illuminate\Http\Request;
-use Mailgun\Mailgun;
 use Illuminate\Support\Facades\Password;
 use Str;
 use Tymon\JWTAuth\Facades\JWTAuth;
@@ -32,8 +31,8 @@ class ResetPasswordController extends Controller{
     }
     public function reset(Request $request)
     {
-       
-        // Validação dos dados
+       //return $request->token;
+
         $request->validate([
             'token' => 'required|string',
             'email' => 'required|email',
@@ -42,7 +41,7 @@ class ResetPasswordController extends Controller{
 
         // Tenta resetar a senha
         $status = Password::reset(
-            $request->only('email', 'password', 'password_confirmation', 'token'),
+            $request->only('email', 'password', 'token'),
             function ($user, $password) {
                 // Atualiza a senha
                 $user->forceFill([
@@ -51,7 +50,12 @@ class ResetPasswordController extends Controller{
                 ])->save();
 
                 // Revoga tokens existentes
-                JWTAuth::invalidate(JWTAuth::fromUser($user));
+                try{
+                    JWTAuth::invalidate(JWTAuth::fromUser($user));
+                }
+                catch(\Exception $e){
+                    return response()->json(['error' => 'Erro ao revogar tokens'],200);
+                }
             }
         );
 

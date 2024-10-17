@@ -1,7 +1,7 @@
 <?php
 
 namespace App\Http\Controllers\Api;
-use App\Models\Itens;
+use App\Models\products;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 
@@ -13,7 +13,7 @@ class ItensController extends Controller
     public function index()
     {
         //
-        return Itens::get();
+        return products::get();
     }
 
     public function get(Request $request){
@@ -21,14 +21,14 @@ class ItensController extends Controller
         $id = $request->id;
         
         if($id == null){
-            return Itens::where("name",$item)->get()->first();
+            return products::where("name",$item)->get()->first();
         }
-        return Itens::where("id",$id)->get()->first();
+        return products::where("id",$id)->get()->first();
     }
 
     public function getSuggests(Request $request){
-        return Itens::where("category",$request->category)->get()->all();
-
+        
+        return Products::where('category', 'like', '%"category": "' . $request->category . '"%')->get();;
     }
     public function getHome(Request $request){
         

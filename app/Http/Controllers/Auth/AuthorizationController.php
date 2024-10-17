@@ -5,16 +5,16 @@ namespace App\Http\Controllers\Auth;
 use App\Models\User;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
-use Illuminate\Support\Facades\Auth;
 use Tymon\JWTAuth\Facades\JWTAuth;
 
 class AuthorizationController extends Controller{
+
 
     public function register(Request $request){
         
         
         $user = User::create([
-            'username' => $request->username,
+            'name' => $request->username,
             'email' => $request->email,
             'password' => bcrypt($request->password)
         ]);
@@ -32,16 +32,15 @@ class AuthorizationController extends Controller{
         }
         
         return response()->json([
-            'user'=>Auth::user(),
+            'user'=>JWTAuth::user(),
             'Token'=> $token,
         ]);
         
     }
 
     public function googleLogin(){
-        $user = auth()->user();
-        $token = auth()->refresh();
-
+        $user = JWTAuth::user();
+        $token = JWTAuth::refresh();
         return response()->json([
             'user'=>$user,
             'Token'=>$token

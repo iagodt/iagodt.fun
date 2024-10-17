@@ -16,7 +16,7 @@
     'fallback_locale' => 'en',
     'faker_locale' => 'en_US',
     'cipher' => 'AES-256-CBC',
-    'key' => 'base64:kV3Q+BfBSXtIbRYtvjB7UZOg9AhFTitRZNozUEueqGA=',
+    'key' => 'base64:PNy7gaVCkin+xfxAZKga/UsOkUughohaUiml1P7+So8=',
     'previous_keys' => 
     array (
     ),
@@ -110,7 +110,7 @@
     array (
       'web' => 
       array (
-        'driver' => 'jwt',
+        'driver' => 'session',
         'provider' => 'users',
       ),
     ),

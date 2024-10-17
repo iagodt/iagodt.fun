@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\Api\AttributesController;
 use App\Http\Controllers\Api\CarouselBannerController;
 use App\Http\Controllers\Api\CartController;
 use App\Http\Controllers\Api\HighlightsController;
@@ -7,17 +8,26 @@ use App\Http\Controllers\Api\ItensController;
 use App\Http\Controllers\Auth\AuthorizationController;
 use App\Http\Controllers\Auth\GoogleController;
 use App\Http\Controllers\Auth\ResetPasswordController;
-use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\ApplicationController;
-use App\Http\Controllers\CategoryController;
+use App\Http\Controllers\Api\CategoryController;
 
 
 
+Route::group(['middleware' => 'JWTAuth'], function () {
+    //rotas com jwtAuth
+    Route::get('auth/google/login', [AuthorizationController::class, 'googleLogin']);
+    Route::get('api/usercart/add', [CartController::class, 'userAdd']);
+    Route::get('api/usercart/get', [CartController::class, 'userGet']);
+    Route::get('api/usercart/remove', [CartController::class, 'userRemove']);
 
+});
 
+Route::get('api/attributes/item', [AttributesController::class, 'getItem']);
+Route::get('api/attributes/filter', [AttributesController::class, 'filter']);
+Route::get('api/attributes/get', [AttributesController::class, 'index']);
 Route::get('api/categories/get', [CategoryController::class, 'index']);
-Route::get('api/highlights/get',[HighlightsController::class, 'index']);
+Route::get('api/highlights/get', [HighlightsController::class, 'index']);
 Route::get('api/carousel/get', [CarouselBannerController::class, 'index']);
 Route::get('api/itens/index', [ItensController::class, 'index']);
 Route::get('api/itens/get', [ItensController::class, 'get']);
@@ -36,14 +46,6 @@ Route::post('auth/recovery-password', [ResetPasswordController::class, 'reset'])
 Route::get('auth/google/redirect', [GoogleController::class, 'redirect']);
 Route::get('auth/google/callback', [GoogleController::class, 'callback']);
 
-Route::group(['middleware' => 'JWTAuth'], function (){
-    //rotas com jwtAuth
-    Route::get('auth/google/login', [AuthorizationController::class, 'googleLogin']);
-    Route::get('api/usercart/add', [CartController::class, 'userAdd']);
-    Route::get('api/usercart/get', [CartController::class, 'userGet']);
-    Route::get('api/usercart/remove', [CartController::class, 'userRemove']);
-
-});
-
+    
 
 Route::get('{view}', ApplicationController::class)->where('view', '(.*)');

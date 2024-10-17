@@ -22,7 +22,7 @@
             </Carousel>
 
             <div class="ItemDescription-Container">
-                <div class="htmlDiv" v-html="ItemData.Description"></div>
+                <div v-if="ItemData.description" class="htmlDiv" v-html="ItemData.description"></div>
             </div>
         </div>
         <div class="infos-container">
@@ -31,13 +31,14 @@
                     +
                     '%OFF' }}</span>
                 <span class="Item-name">{{ ItemData.name }}</span>
-                
+
             </div>
             <div class="Prices">
                 <div v-if="ItemData.discount != null" class="Item-price">{{ 'R$ ' +
-                    ItemData.Price }}
+                    ItemData.price }}
                 </div>
-                <div class="Item-discountedPrice">{{ 'R$ ' + (ItemData.Price-(ItemData.Price*(1*(ItemData.discount/100)))).toFixed(2) }}</div>
+                <div class="Item-discountedPrice">{{ 'R$ ' +
+                    (ItemData.price - (ItemData.price * (1 * (ItemData.discount / 100)))).toFixed(2) }}</div>
             </div>
             <div class="Item-installment">
                 <span class="material-symbols-outlined" style="font-size: 36px; margin-right: 0.2em;">
@@ -45,6 +46,16 @@
                 </span>
                 <p class="Item-installmentText">{{ ItemData.installment }}</p>
             </div>
+
+            <div class="dropdown-container">
+                <div v-for="attribute,name in attributes" class="dropdown">
+                    <label :for="name">{{ name }}</label>
+                    <select :id="name">
+                        <option v-for="key in attribute">{{ key }}</option>
+                    </select>
+                </div>
+            </div>
+
             <div class="Buy-container">
                 <div class="qnt-container">
                     <button class="subQnt" v-on:click="subQuantity">-</button>
@@ -71,38 +82,40 @@
                         <h3 class="shipping-title">Entregar em</h3>
                         <div class="shipping-item">
                             <div class="shipping-item-container">
-            
+
                                 <div class="shipping-item-label">
-                                    <p class="shipping-type">FRETE ESPECIAL - {{ cepInfo.localidade+', '+cepInfo.uf }}</p>
+                                    <p class="shipping-type">FRETE ESPECIAL - {{ cepInfo.localidade + ', ' + cepInfo.uf }}
+                                    </p>
                                 </div>
-                                    <!--  colocar que o frete é 15-25 dias mas com a data tipo 19/10 até 25/10 -->
+                                <!--  colocar que o frete é 15-25 dias mas com a data tipo 19/10 até 25/10 -->
                                 <div class="shippingPrices">
-                                    <p class="shipping-price">{{ 'R$ '+shippingPrice }}</p>
-                                    <p class="shipping-priceDisconted">{{ 'R$ '+(shippingPrice-shippingPrice) }}</p>
+                                    <p class="shipping-price">{{ 'R$ ' + shippingPrice }}</p>
+                                    <p class="shipping-priceDisconted">{{ 'R$ ' + (shippingPrice - shippingPrice) }}</p>
                                 </div>
-                                    <!-- <input type="checkbox" checked="true" disabled/>  --> 
+                                <!-- <input type="checkbox" checked="true" disabled/>  -->
                             </div>
                             <div class="shipping-estimedTime">
                                 <span id="estimedTimeIcon" class="material-symbols-outlined">
-                                history
+                                    history
                                 </span>
                                 <p class="estimedTimeText">chega entre quinta 22/08 e segunda 02/09</p>
                             </div>
                         </div>
-                        
-                        
-                        
+
+
+
                     </div>
 
                 </div>
                 <div class="shipping-error" v-if="cepError == true">
                     Desculpe o cep fornecido nao foi encontrado
                 </div>
-            </div><!--  :style=" [cepError ? (shipping ? {'margin-top': '3em'} : {'margin-top': '10em'}) : (shipping ? {'margin-top': '2em'} : {'margin-top': '11em'})]"  -->
-            <div class="store-infos" >
+            </div>
+            <!--  :style=" [cepError ? (shipping ? {'margin-top': '3em'} : {'margin-top': '10em'}) : (shipping ? {'margin-top': '2em'} : {'margin-top': '11em'})]"  -->
+            <div class="store-infos">
                 <div class="store-item">
                     <span id="store-icon" class="material-symbols-outlined">
-                    verified_user
+                        verified_user
                     </span>
                     <div class="store-label">
                         <p class="store-title">SITE SEGURO</p>
@@ -133,20 +146,21 @@
             <div class="suggest-container">
                 <div class="suggest_title">Produtos Relacionados</div>
                 <div class="suggest_Itens">
-                        <Carousel id="suggest_carousel" :items-to-show="2" :wrap-around="true" v-model="currentSuggest">
-                            <Slide class="suggest_carousel" v-for="slide in ItemImages" :key="slide" style="width: fit-content;">
-                                <ItemCard class="suggest_item" v-for="item in suggests" :Item="item"/>
-                            </Slide>
-                            <template #addons>
-                                <Navigation />
-                            </template>
-                        </Carousel>
+                    <Carousel id="suggest_carousel" :items-to-show="2" :wrap-around="true" v-model="currentSuggest">
+                        <Slide class="suggest_carousel" v-for="slide in ItemImages" :key="slide"
+                            style="width: fit-content;">
+                            <ItemCard class="suggest_item" v-for="item in suggests" :Item="item" />
+                        </Slide>
+                        <template #addons>
+                            <Navigation />
+                        </template>
+                    </Carousel>
                 </div>
             </div>
         </section>
-        
+
     </div>
-    
+
 </template>
 <script>
 import { Carousel, Slide, Navigation } from 'vue3-carousel'
@@ -163,121 +177,150 @@ export default {
     },
     data() {
         return {
-            currentSuggest:0,
+            currentSuggest: 0,
             currentSlide: 0,
-            ItemData: null,
-            ItemImages: null,
+            ItemData: { description: '' }, // gambiarra? sim Funciona? sim tambem :) igual todo o CODIGO DESSA BAGAÇA
+            ItemImages: [],
             quantity: 1,
             shipping: false,
             cepInfo: null,
             cepError: null,
             shippingPrice: 32.50,
-            suggests: null
+            suggests: null,
+            attributes: [],
 
         }
 
     },
     methods: {
-        teste2(){
-            if(this.cepError){
-                if(this.shipping){
-                    return {'background-color': 'red'} // true true
-                }else{
-                    return {'background-color': 'green'} // true false
+        async getAttributes(){
+            const _this = this
+            await axios({
+                method:'get',
+                url:`/api/attributes/item?id=${this.ItemData.id}`
+            }).then((response)=>{
+                _this.attributes = response.data
+            })
+        },
+
+        cepMessage() {
+            if (this.cepError) {
+                if (this.shipping) {
+                    return { 'background-color': 'red' } // true true
+                } else {
+                    return { 'background-color': 'green' } // true false
                 }
-            }else{
-                if(this.shipping){
-                    return {'background-color': 'blue'} // false true
+            } else {
+                if (this.shipping) {
+                    return { 'background-color': 'blue' } // false true
                 }
-                return {'background-color': 'yellow'} // false false
+                return { 'background-color': 'yellow' } // false false
             }
         },
-        async getCEP(){
+        async getCEP() {
             const _this = this
             let cep = document.getElementById('cep').value
             await axios({
-                    method: 'get',
-                    url: `https://viacep.com.br/ws/${cep}/json/`,
-            
-                }).then(function (response) {
-                    _this.shipping = true
-                    _this.cepInfo = response.data
-                    _this.cepError = false
+                method: 'get',
+                url: `https://viacep.com.br/ws/${cep}/json/`,
 
-                }).catch(function (error){
-                    _this.shipping = false
-                    _this.cepError = true
-                })
-            
+            }).then(function (response) {
+                _this.shipping = true
+                _this.cepInfo = response.data
+                _this.cepError = false
+
+            }).catch(function (error) {
+                _this.shipping = false
+                _this.cepError = true
+            })
+
         },
 
-        subQuantity(){
-            if(this.quantity > 1){
+        subQuantity() {
+            if (this.quantity > 1) {
                 this.quantity += -1
             }
         },
         slideTo(val) {
             this.currentSlide = val
         },
-        async getSuggests(){
+        async getSuggests() {
             const _this = this
+
             await axios({
-                    method: 'get',
-                    url: `/api/itens/getSuggests?category=${this.ItemData.Category}`
-                }).then(function (response) {
-                    _this.suggests = response.data
-                })
-                //console.log(this.suggests)
+                method: 'get',
+                url: `/api/itens/getSuggests?category=${this.ItemData.category[0].category}`
+            }).then(function (response) {
+                _this.suggests = response.data
+            })
         }
-        
+
         ,
         getImages() {
-            const _this = this
 
-            _this.ItemImages = []
-            var dataToArray = []
-            dataToArray.push(this.ItemData.Icon,
-                this.ItemData.Image1,
-                this.ItemData.Image2,
-                this.ItemData.Image3,
-                this.ItemData.Image4,
-                this.ItemData.Image5,
-                this.ItemData.Image6)
 
-            dataToArray.forEach(element => {
-                if (element != null) {
-                    let elementlink = '/storage/' + element
-
-                    _this.ItemImages.push(elementlink)
-                }
-            });
+            this.ItemData.images.forEach(element => {
+                let elementlink = '/storage/' + element.image
+                this.ItemImages.push(elementlink)
+            })
 
 
         },
         getItem: async function () {
             const _this = this
             var product = await globalThis.location.pathname.split('/')[2]
-                await axios({
-                    method: 'get',
-                    url: `/api/itens/get?id=${product}`
-                }).then(function (response) {
-                    _this.ItemData = response.data
+            await axios({
+                method: 'get',
+                url: `/api/itens/get?id=${product}`
+            }).then(function (response) {
+                _this.ItemData = response.data
 
-                })
-            
+            })
+
         }
     },
     async created() {
-        
+        console.log('arruma a porra da data do frete krl')
         await this.getItem()
         this.getImages()
         await this.getSuggests()
+        await this.getAttributes()
     }
 }
 </script>
 
 <style scoped>
-.suggest_title{
+.dropdown-container {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+    max-width: 400px;
+}
+
+.dropdown {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    margin-bottom: 10px;
+}
+
+.dropdown label {
+    font-size: 12px;
+    color: #666;
+    margin-bottom: 5px;
+}
+
+.dropdown select {
+    padding: 5px 10px;
+    font-size: 14px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    width: fit-content;
+    /* Adjusted width to match the image */
+}
+
+
+.suggest_title {
     text-align: center;
     font-size: 28px;
     font-style: normal;
@@ -285,32 +328,37 @@ export default {
     margin-top: 2em;
     margin-bottom: 1em;
 }
-.suggest_item{
+
+.suggest_item {
     min-height: 36;
     margin-left: 1em;
     margin-right: 1em;
 }
-.suggest_section{
+
+.suggest_section {
     display: flex;
     align-items: center;
     justify-content: center;
     width: 119em;
 }
-.suggest-container{
+
+.suggest-container {
     width: 83em;
 }
 
 
 
-.ItemDescription-Container{
+.ItemDescription-Container {
     align-items: center;
     display: flex;
 }
-.shipping-title{
+
+.shipping-title {
     margin: 0px;
     font-style: normal;
 }
-.shipping-gift{
+
+.shipping-gift {
     font-size: medium;
     display: flex;
     margin-top: 0.5em;
@@ -321,55 +369,66 @@ export default {
     text-align: center;
     justify-content: center;
 }
-.shipping-type{
+
+.shipping-type {
     margin: 0px;
     font-style: normal;
 }
-.shipping-item{
+
+.shipping-item {
     padding: 1em;
     border-radius: 10px;
     -webkit-box-shadow: rgba(50, 50, 93, 0.25) 0px 2px 5px -1px, rgba(0, 0, 0, 0.3) 0px 1px 3px -1px;
--moz-box-shadow: rgba(50, 50, 93, 0.25) 0px 2px 5px -1px, rgba(0, 0, 0, 0.3) 0px 1px 3px -1px;
-box-shadow: rgba(50, 50, 93, 0.25) 0px 2px 5px -1px, rgba(0, 0, 0, 0.3) 0px 1px 3px -1px;
+    -moz-box-shadow: rgba(50, 50, 93, 0.25) 0px 2px 5px -1px, rgba(0, 0, 0, 0.3) 0px 1px 3px -1px;
+    box-shadow: rgba(50, 50, 93, 0.25) 0px 2px 5px -1px, rgba(0, 0, 0, 0.3) 0px 1px 3px -1px;
 
 }
-#estimedTimeIcon{
+
+#estimedTimeIcon {
     color: #888;
 }
-.estimedTimeText{
+
+.estimedTimeText {
     color: #888;
     margin: 0px;
 }
-.shipping-estimedTime{
+
+.shipping-estimedTime {
     display: flex;
     align-items: center;
     gap: 0.2em;
 }
-.shippingPrices{
+
+.shippingPrices {
     display: flex;
     gap: 0.5em;
     align-items: center;
 }
-.shipping-priceDisconted{
+
+.shipping-priceDisconted {
     font-weight: bold;
     font-size: x-large;
 }
-.shipping-price{
+
+.shipping-price {
     color: #888;
     text-decoration: line-through;
 }
+
 .shipping-priceDisconted,
-.shipping-price{
+.shipping-price {
     font-family: ui-sans-serif, system-ui, sans-serif, Apple Color Emoji, Segoe UI Emoji, Segoe UI Symbol, Noto Color Emoji;
     font-style: normal;
     margin: 0px;
 }
-.shipping-item-container{
+
+.shipping-item-container {
     justify-content: space-between;
     align-items: center;
     display: flex;
 }
-.shipping-error{
+
+.shipping-error {
     display: flex;
     margin-top: 0.5em;
     border-radius: 10px;
@@ -380,39 +439,45 @@ box-shadow: rgba(50, 50, 93, 0.25) 0px 2px 5px -1px, rgba(0, 0, 0, 0.3) 0px 1px 
     justify-content: center;
 }
 
-#store-icon{
+#store-icon {
     font-size: 64px;
 }
-.store-text{
+
+.store-text {
     margin-top: 0.2em;
     font-size: small;
     margin-left: 0.5em;
 }
-.store-title{
+
+.store-title {
     margin-bottom: 0px;
     margin-left: 0.5em;
     font-weight: bolder;
 }
-.store-item{
+
+.store-item {
     display: flex;
     align-items: center;
     max-width: 15em;
     min-width: 10em;
 }
-.store-infos{
+
+.store-infos {
     display: flex;
     gap: 1em;
 }
 
-.shipping-button{
+.shipping-button {
     display: flex;
 }
-.cep-button:hover{
+
+.cep-button:hover {
     background-color: #000;
     color: #fafafa;
     cursor: pointer;
 }
-.cep-button{
+
+.cep-button {
     width: 40%;
     font-size: large;
     border-top-right-radius: 10px;
@@ -423,16 +488,18 @@ box-shadow: rgba(50, 50, 93, 0.25) 0px 2px 5px -1px, rgba(0, 0, 0, 0.3) 0px 1px 
     border: #000 solid 2px;
     background-color: transparent;
 }
-.cep-input:focus-visible{
+
+.cep-input:focus-visible {
     outline: none;
 }
 
 .cep-input::-webkit-inner-spin-button,
-.cep-input::-webkit-outer-spin-button{
-    -webkit-appearance: none; 
+.cep-input::-webkit-outer-spin-button {
+    -webkit-appearance: none;
     margin: 0;
 }
-.cep-input{
+
+.cep-input {
     padding-left: 1em;
     background-color: transparent;
     height: 2em;
@@ -444,45 +511,53 @@ box-shadow: rgba(50, 50, 93, 0.25) 0px 2px 5px -1px, rgba(0, 0, 0, 0.3) 0px 1px 
     border-bottom-left-radius: 10px;
 }
 
-.shipping-label{
+.shipping-label {
     display: flex;
     align-items: center;
     margin-top: 1em;
 }
-.inputQnt{
+
+.inputQnt {
     width: 3em;
     text-align: center;
     color: #888;
 }
-.inputQnt:focus-visible{
+
+.inputQnt:focus-visible {
     outline: none;
 }
-.inputQnt::-webkit-inner-spin-button, 
-.inputQnt::-webkit-outer-spin-button { 
-  -webkit-appearance: none; 
-  margin: 0; 
+
+.inputQnt::-webkit-inner-spin-button,
+.inputQnt::-webkit-outer-spin-button {
+    -webkit-appearance: none;
+    margin: 0;
 }
+
 .addQnt,
 .inputQnt,
-.subQnt{
+.subQnt {
     margin: 0px;
     border: none;
     background-color: transparent;
     font-size: x-large;
 
 }
-.addQnt,.subQnt{
+
+.addQnt,
+.subQnt {
     cursor: pointer;
     width: 1em;
 }
-.qnt-container{
+
+.qnt-container {
     border: #888 solid 1px;
     width: fit-content;
     border-radius: 15px;
     display: flex;
     margin-right: 1em;
 }
-.Buy-Button{
+
+.Buy-Button {
     background-color: #000;
     color: #fafafa;
     border: #000 solid;
@@ -493,22 +568,26 @@ box-shadow: rgba(50, 50, 93, 0.25) 0px 2px 5px -1px, rgba(0, 0, 0, 0.3) 0px 1px 
 
     font-size: x-large;
 }
-.Buy-Button:hover{
+
+.Buy-Button:hover {
     background-color: #fafafa;
     color: #000;
-    cursor: pointer;    
+    cursor: pointer;
 
 }
-.Buy-container{
+
+.Buy-container {
     margin-top: 2em;
     display: flex;
 }
-.Item-installmentText{
+
+.Item-installmentText {
     font-size: larger;
     font-weight: 800;
     font-style: normal;
     font-family: system-ui;
 }
+
 .ItemDescription-Container {
     color: black;
 }
@@ -517,12 +596,14 @@ box-shadow: rgba(50, 50, 93, 0.25) 0px 2px 5px -1px, rgba(0, 0, 0, 0.3) 0px 1px 
     font-size: 46px;
     font-weight: bolder;
 }
-.Item-installment{
+
+.Item-installment {
     display: flex;
     align-items: center;
 }
+
 .Item-price {
-    font-size: 32px ;
+    font-size: 32px;
     margin-right: 1em;
     color: #888;
     text-decoration: line-through;
@@ -604,15 +685,16 @@ box-shadow: rgba(50, 50, 93, 0.25) 0px 2px 5px -1px, rgba(0, 0, 0, 0.3) 0px 1px 
 }
 </style>
 <style>
-#suggest_carousel > button.carousel__prev{
+#suggest_carousel>button.carousel__prev {
     margin-left: -10%;
 }
-#suggest_carousel > button.carousel__next{
+
+#suggest_carousel>button.carousel__next {
     margin-right: -10%;
 }
 
-#suggest_carousel > button.carousel__prev,
-#suggest_carousel > button.carousel__next{
+#suggest_carousel>button.carousel__prev,
+#suggest_carousel>button.carousel__next {
     border-radius: 100%;
     width: 50px;
     height: 50px;

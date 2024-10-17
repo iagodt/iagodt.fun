@@ -1,9 +1,9 @@
 <?php
 
-namespace App\Http\Controllers;
+namespace App\Http\Controllers\Api;
 
 
-use App\Models\Itens;
+use App\Models\products;
 use App\Models\Categories;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
@@ -27,11 +27,15 @@ class CategoryController extends Controller
         
     }
 
-    public function getItensByCategory(Request $request){
-        $category = $request->category;
-        $categoryID = Categories::where('title',$category)->get()[0]['id'];
-        return Itens::where('category',$categoryID)->get();
-    }
+    public function getItensByCategory(Request $request)
+{
+    $category = $request->category;
+    $categoryRecord = Categories::where('title', $category)->first();
+
+    $categoryID = (string) $categoryRecord->id;
+
+    return Products::where('category', 'like', '%"category": "' . $categoryID . '"%')->get();
+}
 
     /**
      * Store a newly created resource in storage.

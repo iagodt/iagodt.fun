@@ -3,7 +3,7 @@
 namespace App\Http\Controllers\Api;
 use App\Models\cart_itens;
 use App\Models\carts;
-use App\Models\Itens;
+use App\Models\products;
 use DB;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
@@ -46,7 +46,7 @@ class CartController extends Controller{
             $itensOnCart = [];
             $sessionItens = $request->session()->get('cart');
             foreach($sessionItens as $i){
-                array_push($itensOnCart,Itens::where("id",$i)->get()->first());
+                array_push($itensOnCart,products::where("id",$i)->get()->first());
             }
             return $itensOnCart;
         }else{

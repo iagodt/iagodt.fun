@@ -2,13 +2,13 @@
     <div class="product-card">
         <div v-if="Item.discount != null" class="discount">{{ Item.discount+'% OFF' }}</div>
         <a :href="$router.resolve({ name: 'ProductPage', params: { product: Item.id}}).href" class="product-link">
-            <img v-if="Item.discount != null" :src="'/storage/'+Item.Icon" :alt="Item.name" class="product-image" />
+            <img v-if="Item.discount != null" :src="'/storage/'+Item.images[0].image" :alt="Item.name" class="product-image" />
             <img v-else :src="'/storage/'+Item.Icon" :alt="Item.name" class="product-image" style="border-top-left-radius: 10px; border-top-right-radius: 10px;"/>
             <div class="product-info">
                 <h3 class="product-name">{{ Item.name }}</h3>
                 <div class="prices">
-                    <span v-if="Item.discount != null" class="original-price">{{ 'R$ '+Item.Price }}</span>
-                    <span class="discounted-price">{{'R$ '+(Item.Price-(Item.Price*(1*(Item.discount/100)))).toFixed(2) }}</span>
+                    <span v-if="Item.discount != null" class="original-price">{{ 'R$ '+Item.price }}</span>
+                    <span class="discounted-price">{{'R$ '+(Item.price-(Item.price*(1*(Item.discount/100)))).toFixed(2) }}</span>
                 </div>
                 <div class="installments">{{ Item.installment }}</div>
 

@@ -21,7 +21,6 @@
 <script>
 import axios from 'axios';
 
-//https://iagodt.fun?favabar793@sgatra.com
 export default{
     data(){
         return{

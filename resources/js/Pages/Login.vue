@@ -4,7 +4,7 @@
             <h2>Login</h2>
             <form class="login-form" @submit.prevent="Logon">
                 <div class="form-group">
-                    <input type="text" id="emailTel" name="emailTel" placeholder="Email ou Telefone"
+                    <input type="email" id="email" name="email" placeholder="Email"
                         required>
                 </div>
                 <div class="form-group">
@@ -35,26 +35,8 @@ export default {
     methods: {
         ...mapActions({ Login: 'login' }),
         async Logon() {
-            let emailTel = this.verifyEmailOrTel()
-            await this.Login({email: emailTel, password: document.getElementById('password').value.toString()})
+            await this.Login({email: document.getElementById('email').value.toString(), password: document.getElementById('password').value.toString()})
             this.$router.push('/account')
-        },
-        verifyEmailOrTel() {
-            let k = document.getElementById('emailTel').value.toString()
-            if (k.toLowerCase().match(
-                /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|.(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/
-            )) {
-                // email valido
-                return {email: k, type: 'email'}
-            }
-            if (!isNaN(k) && k != '') {
-                if(k.match(/^[1-9]{2}(?:[2-8]|9[0-9])[0-9]{3}[0-9]{4}$/)){
-                    //tel valido
-                    return {tel: k, type: 'tel'}
-                }
-            }
-            alert('Email ou telefone invalido, para telefones ultilize apenas numeros')
-
         },
 
     },

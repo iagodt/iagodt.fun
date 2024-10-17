@@ -28,7 +28,7 @@
         </ul>
       </div>
     </nav>
-    <div class="cart-container" id="cart-container"  v-on:focusout="handleFocusOut" tabindex="0" v-if="cartStatus == true">
+    <div class="cart-container" id="cart-container"  v-on:focusout="" tabindex="0" v-if="cartStatus == true">
         <div id="cartSwitch"  class="cart-back" v-on:click="cartSwitch">
           <h2>Carrinho</h2>
           <span id="cart" class="material-symbols-outlined">close</span>
@@ -36,12 +36,12 @@
         <div class="cart-content">
           <div class="cart-itens" v-if="itensOnCart.length > 0">
             <div v-for="item in itensOnCart" class="cart-content-item">
-              <img :src="'/storage/'+item.Icon" class="cart-image">
+              <img :src="'/storage/'+item.images[0].image" class="cart-image">
               <div class="cart-item-info">
                 <div class="title">{{item.name}}</div>
                 <div class="prices">
-                  <div v-if="item.discount != null" class="price">R$ {{ (item.Price-(item.Price*(1*(item.discount/100)))).toFixed(2) }}</div>
-                  <div v-else class="price">R$ {{ item.Price.toFixed(2) }}</div>
+                  <div v-if="item.discount != null" class="price">R$ {{ (item.price-(item.price*(1*(item.discount/100)))).toFixed(2) }}</div>
+                  <div v-else class="price">R$ {{ item.price.toFixed(2) }}</div>
                 </div>
                 
               </div>
@@ -220,9 +220,9 @@ methods:{
   overflow: auto;
   display: flex;
   flex-direction: column;
-  gap: 1em;
 }
 .cart-content-item{
+  margin-bottom: 1em;
   margin-left: 1em;
   margin-right: 1em;
   box-shadow: rgba(0, 0, 0, 0.35) 0px 5px 15px;

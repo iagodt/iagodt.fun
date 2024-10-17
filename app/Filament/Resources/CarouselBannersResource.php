@@ -31,8 +31,8 @@ class CarouselBannersResource extends Resource
                 TextInput::make('text above')->required()->minLength(10),
                 TextInput::make('main text')->required(),
                 TextInput::make('button text')->required(),
-                TextInput::make('link'),
-                //
+                TextInput::make('link')->required(),
+                // 
             ]);
     }
 

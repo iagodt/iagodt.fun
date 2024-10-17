@@ -24,7 +24,7 @@ class GoogleController extends Controller{
             $user = User::where('email', $userG->getEmail())->first();
 
             if(!$user){
-                User::create([
+                $user = User::create([
                     'name' => $userG->getName(),
                     'email' => $userG->getEmail(),
                     'password' => Hash::make(Str::random(16)),

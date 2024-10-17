@@ -1,6 +1,9 @@
 <?php return array (
   'livewireComponents' => 
   array (
+    'app.filament.resources.attribute-resource.pages.create-attribute' => 'App\\Filament\\Resources\\AttributeResource\\Pages\\CreateAttribute',
+    'app.filament.resources.attribute-resource.pages.edit-attribute' => 'App\\Filament\\Resources\\AttributeResource\\Pages\\EditAttribute',
+    'app.filament.resources.attribute-resource.pages.list-attributes' => 'App\\Filament\\Resources\\AttributeResource\\Pages\\ListAttributes',
     'app.filament.resources.carousel-banners-resource.pages.create-carousel-banners' => 'App\\Filament\\Resources\\CarouselBannersResource\\Pages\\CreateCarouselBanners',
     'app.filament.resources.carousel-banners-resource.pages.edit-carousel-banners' => 'App\\Filament\\Resources\\CarouselBannersResource\\Pages\\EditCarouselBanners',
     'app.filament.resources.carousel-banners-resource.pages.list-carousel-banners' => 'App\\Filament\\Resources\\CarouselBannersResource\\Pages\\ListCarouselBanners',
@@ -10,9 +13,9 @@
     'app.filament.resources.highlights-resource.pages.create-highlights' => 'App\\Filament\\Resources\\HighlightsResource\\Pages\\CreateHighlights',
     'app.filament.resources.highlights-resource.pages.edit-highlights' => 'App\\Filament\\Resources\\HighlightsResource\\Pages\\EditHighlights',
     'app.filament.resources.highlights-resource.pages.list-highlights' => 'App\\Filament\\Resources\\HighlightsResource\\Pages\\ListHighlights',
-    'app.filament.resources.itens-resource.pages.create-itens' => 'App\\Filament\\Resources\\ItensResource\\Pages\\CreateItens',
-    'app.filament.resources.itens-resource.pages.edit-itens' => 'App\\Filament\\Resources\\ItensResource\\Pages\\EditItens',
-    'app.filament.resources.itens-resource.pages.list-itens' => 'App\\Filament\\Resources\\ItensResource\\Pages\\ListItens',
+    'app.filament.resources.products-resource.pages.create-products' => 'App\\Filament\\Resources\\ProductsResource\\Pages\\CreateProducts',
+    'app.filament.resources.products-resource.pages.edit-products' => 'App\\Filament\\Resources\\ProductsResource\\Pages\\EditProducts',
+    'app.filament.resources.products-resource.pages.list-products' => 'App\\Filament\\Resources\\ProductsResource\\Pages\\ListProducts',
     'filament.pages.dashboard' => 'Filament\\Pages\\Dashboard',
     'filament.widgets.account-widget' => 'Filament\\Widgets\\AccountWidget',
     'filament.widgets.filament-info-widget' => 'Filament\\Widgets\\FilamentInfoWidget',
@@ -48,10 +51,11 @@
   ),
   'resources' => 
   array (
+    '/home/iagodt/htdocs/iagodt.fun/app/Filament/Resources/AttributeResource.php' => 'App\\Filament\\Resources\\AttributeResource',
     '/home/iagodt/htdocs/iagodt.fun/app/Filament/Resources/CarouselBannersResource.php' => 'App\\Filament\\Resources\\CarouselBannersResource',
     '/home/iagodt/htdocs/iagodt.fun/app/Filament/Resources/CategoriesResource.php' => 'App\\Filament\\Resources\\CategoriesResource',
     '/home/iagodt/htdocs/iagodt.fun/app/Filament/Resources/HighlightsResource.php' => 'App\\Filament\\Resources\\HighlightsResource',
-    '/home/iagodt/htdocs/iagodt.fun/app/Filament/Resources/ItensResource.php' => 'App\\Filament\\Resources\\ItensResource',
+    '/home/iagodt/htdocs/iagodt.fun/app/Filament/Resources/ProductsResource.php' => 'App\\Filament\\Resources\\ProductsResource',
   ),
   'resourceDirectories' => 
   array (
