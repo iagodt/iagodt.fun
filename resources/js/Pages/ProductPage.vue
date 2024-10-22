@@ -62,7 +62,7 @@
                     <input class="inputQnt" type="number" name="qnt" id="qnt" :value="quantity" min="1">
                     <button class="addQnt" v-on:click=" quantity -= -1">+</button>
                 </div>
-                <button type="button" class="Buy-Button">COMPRAR</button>
+                <button type="button" v-on:click="addCart" class="Buy-Button">COMPRAR</button>
             </div>
             <div class="shipping-container">
                 <div class="shipping-label">
@@ -193,6 +193,29 @@ export default {
 
     },
     methods: {
+        async addCart(){
+            await axios({
+                method: 'post',
+                url: `/api/cart/add?id=${this.ItemData.id}&quantity=${this.quantity}`
+            }).then((response)=>{
+                if (!localStorage.getItem('cart')) {
+                    const cart = [{ ...response.data, quantity: this.quantity }];
+                    localStorage.setItem('cart', JSON.stringify(cart));
+                } else {
+                    let tempLocalStorage = JSON.parse(localStorage.getItem('cart'));
+                    const productIndex = tempLocalStorage.findIndex(element => element.product_id === response.data.product_id);
+
+                    if (productIndex !== -1) {
+                        tempLocalStorage[productIndex].quantity += this.quantity;
+                    } else {
+                        tempLocalStorage.push({ ...response.data, quantity: this.quantity });
+                    }
+
+                    localStorage.setItem('cart', JSON.stringify(tempLocalStorage));
+                }
+            })
+        },
+
         async getAttributes(){
             const _this = this
             await axios({

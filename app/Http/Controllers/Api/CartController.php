@@ -9,51 +9,33 @@ use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Auth;
 
-class CartController extends Controller{
-    public function getCart(Request $request){
-        return $request->session()->get('cart');
-    }       
-    public function addOnCart(Request $request){
-        $item = $request->item;
-        if($request->session()->exists('cart')){
-            $CartArray = $request->session()->get('cart');
-            array_push($CartArray,$item);
-        }else{
-            $CartArray = [];
-            array_push($CartArray,$item);
-           
-        }
-        $request->session()->put('cart',$CartArray);
+class CartController extends Controller{   
+    public function addCart(Request $request){
+        $item = $request->id;
+        
+        $quantity = (int) ($request->quantity ?? 1);
+        return [
+            'product_id' => products::where('id',$item)->value('id'),
+            'quantity' => $quantity
+        ];
+ 
+
+
 
     }
-    public function removeOfCart(Request $request){
-        $item = $request->item;
-        if($item){
-            $CartArray = $request->session()->get('cart');
-            unset($CartArray[array_search($item,$CartArray)]);
-            $request->session()->remove('cart');
-            $request->session()->put('cart',$CartArray);
-        }else{
-            return response(json_encode(['Error' => 'Payload is required']),400) ;
-        }
-    }
-    public function clearCart(Request $request){
-        $request->session()->forget('cart');
-        
-    }
-    public function getItensOnCart(Request $request) {
-        if($request->session()->exists('cart')){
-            $itensOnCart = [];
-            $sessionItens = $request->session()->get('cart');
-            foreach($sessionItens as $i){
-                array_push($itensOnCart,products::where("id",$i)->get()->first());
-            }
-            return $itensOnCart;
-        }else{
-            return response(['error'=>'cart is empty'],200);
+
+    public function getItensCart(Request $request){
+        $cart =json_decode($request->cart);
+        $itensOnCart = [];
+        foreach($cart as $i){
+            $product = products::where('id',$i->product_id)->get()->toArray();
+            $product['quantity'] = $i->quantity;
+
+            array_push($itensOnCart,$product);
         }
         
         
+        return $itensOnCart;
     }
 
     public function userAdd(Request $request){
@@ -69,7 +51,6 @@ class CartController extends Controller{
         
 
     }
-
     public function userRemove(Request $request){
         $userCart = carts::where('user_id', Auth::id())->value('id');
         cart_itens::where('cart_id', $userCart)
@@ -91,10 +72,5 @@ class CartController extends Controller{
             array_push($itensArray,$item);
         }
         return $itensArray;
-        
-        
-        
-         
-         
     }
 }

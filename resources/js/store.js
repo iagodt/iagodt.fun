@@ -7,6 +7,7 @@ const store = createStore({
     return {
       user: null,
       isAuthenticated: false,
+      cart: [],
     }
   },
 

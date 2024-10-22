@@ -20,8 +20,6 @@
           </li>
           <li class="nav-item">
             <div id="cartSwitch"  class="nav-link" v-on:click="cartSwitch">
-        
-        
               <span id="cart" class="material-symbols-outlined">local_mall</span>
             </div>
           </li>
@@ -34,18 +32,18 @@
           <span id="cart" class="material-symbols-outlined">close</span>
         </div>
         <div class="cart-content">
-          <div class="cart-itens" v-if="itensOnCart.length > 0">
-            <div v-for="item in itensOnCart" class="cart-content-item">
-              <img :src="'/storage/'+item.images[0].image" class="cart-image">
+          <div class="cart-itens" v-if="Cart.length > 0">
+            <div v-for="item in Cart" class="cart-content-item">
+              <img :src="'/storage/'+item[0].images[0].image" class="cart-image">
               <div class="cart-item-info">
-                <div class="title">{{item.name}}</div>
+                <div class="title">{{item[0].name}}</div>
                 <div class="prices">
-                  <div v-if="item.discount != null" class="price">R$ {{ (item.price-(item.price*(1*(item.discount/100)))).toFixed(2) }}</div>
-                  <div v-else class="price">R$ {{ item.price.toFixed(2) }}</div>
+                  <div v-if="item[0].discount != null" class="price">R$ {{ (item[0].price-(item[0].price*(1*(item[0].discount/100)))).toFixed(2) }}</div>
+                  <div v-else class="price">R$ {{ item[0].price.toFixed(2) }}</div>
                 </div>
                 
               </div>
-              <span id="delete-item" class="material-symbols-outlined">delete</span>
+              <span id="delete-item" v-on:click="deleteItemCart(item[0].id)" class="material-symbols-outlined">delete</span>
             </div>
           </div>
           <div class="cart-empty" v-else>
@@ -53,23 +51,20 @@
             <button class="start-shopping">COMECE A COMPRAR</button>
           </div>
         </div>
-        <div v-if="itensOnCart.length > 0" class="cart-finish">
+        <div v-if="Cart.length > 0" class="cart-finish">
           <div class="cart-price">
             <div class="cartValue">
               <span>VALOR DO CARRINHO: </span>
-              <span class="cart-value">R$ {{ cartTotalPrice.toFixed(2) }}</span>
+              <span class="cart-value">R$ {{ cartPrice }}</span>
             </div>
-            <div class="cartDiscont">
-              <span>DESCONTO: </span>
-              <span class="cart-value">R$ {{ cartDiscount.toFixed(2) }}</span>
+            <div  class="cartDiscont">
+              <span  >DESCONTO APLICADO: </span>
+              <span id="highlight-value"  class="cart-value">-R$ {{ cartDiscount }}</span>
             </div>
-            <div class="cartTotal">
-              <span>TOTAL: </span>
-              <span class="cart-value">R$ {{ cartPrice.toFixed(2) }}</span>
+            <div   class="cartTotal">
+              <span  >TOTAL A PAGAR: </span>
+              <span id="highlight-value"  class="cart-value">R$ {{ cartTotalPrice }}</span>
             </div>
-            
-            
-            
           </div>
           <div class="finish-purchase">
             FINALIZAR COMPRA
@@ -90,7 +85,7 @@ data(){
   return{
     loginstatus: null,
     cartStatus: false,
-    itensOnCart: [],
+    Cart: [],
     cartPrice: 0,
     cartTotalPrice:0,
     cartDiscount: 0
@@ -102,31 +97,6 @@ methods:{
   },
   setHome(){
     this.$router.push('/')
-  },
-  PriceCalculator(){
-    const _this = this
-    let totalDiscount = null
-    let totalPrice = 0
-    let discountedPrice = 0
-    if(this.itensOnCart.length > 0){
-    this.itensOnCart.forEach((i)=>{
-      if(i.discount != null){
-        totalDiscount += (i.Price*(1*(i.discount/100)))
-      }
-      totalPrice += i.Price
-    })
-    discountedPrice = (totalPrice - totalDiscount)
-
-    _this.cartPrice = discountedPrice
-    _this.cartTotalPrice = totalPrice
-    _this.cartDiscount = totalDiscount
-  
-    }else{
-      _this.cartPrice = 0
-      _this.cartTotalPrice = 0
-      _this.cartDiscount = 0
-    }
-    
   },
   handleFocusOut(){
     const _this = this
@@ -141,30 +111,58 @@ methods:{
     }else{
       _this.cartStatus = false
     }
+
     await this.getCart()
-
-
+    
     if(_this.cartStatus == true){
       this.$nextTick(function(){
         document.getElementById('cart-container').focus()
         
       })
     }
-
-
   },
-  getCart: async function(){
-    const _this = this;
+
+  async deleteItemCart(productId) {
+    if (localStorage.getItem('cart')) {
+        let cart = JSON.parse(localStorage.getItem('cart'));
+        
+        cart = cart.filter(item => item.product_id !== productId);
+
+        localStorage.setItem('cart', JSON.stringify(cart));
+    }
+
+    await this.getCart()
+  },
+  getCartPrice() {
+    let cartPrice = 0;
+    let cartTotalPrice = 0;
+    let cartDiscount = 0;
+
+    this.Cart.forEach(element => {
+        const price = parseFloat(element[0].price) || 0;
+        const discount = parseFloat(element[0].discount) || 0;
+        const discountValue = price * (discount / 100);
+
+        cartPrice += price;
+        cartDiscount += discountValue;
+        cartTotalPrice += price - discountValue;
+    });
+
+    this.cartPrice = cartPrice.toFixed(2);
+    this.cartDiscount = cartDiscount.toFixed(2);
+    this.cartTotalPrice = cartTotalPrice.toFixed(2)
+},
+  async getCart(){
+    //cartUpdate
     await axios({
-        method: 'get',
-        url: `/api/cart/index`
-    }).then(function(response){
-        _this.itensOnCart = response.data
+      method:'post',
+      url: `/api/cart/getItens?cart=${localStorage.getItem('cart')}`
+    }).then((response)=>{
+      this.Cart = response.data
     })
-    
+
+    this.getCartPrice()
   }
-
-
 }
 };
 </script>
@@ -172,6 +170,9 @@ methods:{
 <style scoped>
 @import url('https://fonts.googleapis.com/css2?family=Bodoni+Moda:opsz,wght@6..96,400..900&display=swap');
 
+#highlight-value{
+  font-weight: 900;
+}
 .nav-link:hover,.navbar-brand:hover{
   cursor: pointer;
 }
@@ -244,10 +245,10 @@ methods:{
   display: flex;
   flex-direction: column;
   font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
-  font-size: 1.5em;
+  font-size: 1.4em;
   gap: 0.5em;
-  font-weight:bolder;
   font-style: normal;
+  font-weight:bolder;
 }
 .cart-finish{
   justify-content: space-between;
@@ -283,7 +284,6 @@ methods:{
 .cart-finish{
   background-color: #000;
   padding: 1em;
-  margin-bottom: 1em;
 }
 
 .finish-purchase:hover{

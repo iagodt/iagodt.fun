@@ -15,7 +15,9 @@ return Application::configure(basePath: dirname(__DIR__))
         //
         $middleware->validateCsrfTokens([
             'auth/*',
-            'password/reset'
+            'password/reset',
+            'api/cart/add',
+            'api/cart/getItens'
         ]); 
         $middleware->group('JWTAuth',[authJwt::class]);
     })

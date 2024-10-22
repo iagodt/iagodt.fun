@@ -17,27 +17,31 @@ use App\Http\Controllers\Api\CategoryController;
 Route::group(['middleware' => 'JWTAuth'], function () {
     //rotas com jwtAuth
     Route::get('auth/google/login', [AuthorizationController::class, 'googleLogin']);
+    
     Route::get('api/usercart/add', [CartController::class, 'userAdd']);
     Route::get('api/usercart/get', [CartController::class, 'userGet']);
     Route::get('api/usercart/remove', [CartController::class, 'userRemove']);
-
 });
 
 Route::get('api/attributes/item', [AttributesController::class, 'getItem']);
 Route::get('api/attributes/filter', [AttributesController::class, 'filter']);
 Route::get('api/attributes/get', [AttributesController::class, 'index']);
+
 Route::get('api/categories/get', [CategoryController::class, 'index']);
+Route::get('api/category/get', [CategoryController::class, 'getItensByCategory']);
+
 Route::get('api/highlights/get', [HighlightsController::class, 'index']);
+
 Route::get('api/carousel/get', [CarouselBannerController::class, 'index']);
+
 Route::get('api/itens/index', [ItensController::class, 'index']);
 Route::get('api/itens/get', [ItensController::class, 'get']);
 Route::get('api/itens/getSuggests', [ItensController::class, 'getSuggests']);
-Route::get('api/category/get', [CategoryController::class, 'getItensByCategory']);
-Route::get('api/cart/get', [CartController::class, 'getCart']);
-Route::get('api/cart/remove', [CartController::class, 'removeOfCart']);
-Route::get('api/cart/add', [CartController::class, 'addOnCart']);
-Route::get('api/cart/clear', [CartController::class, 'clearCart']);
-Route::get('api/cart/index', [CartController::class, 'getItensOnCart']);
+
+
+Route::post('api/cart/add', [CartController::class, 'addCart']);
+Route::post('api/cart/getItens', [CartController::class, 'getItensCart']);
+
 
 Route::post('auth/register', [AuthorizationController::class, 'register']);
 Route::post('auth/login', [AuthorizationController::class, 'login']);

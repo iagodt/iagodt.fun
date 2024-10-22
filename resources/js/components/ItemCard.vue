@@ -1,27 +1,30 @@
 <template>
     <div class="product-card">
-        <div v-if="Item.discount != null" class="discount">{{ Item.discount+'% OFF' }}</div>
-        <a :href="$router.resolve({ name: 'ProductPage', params: { product: Item.id}}).href" class="product-link">
-            <img v-if="Item.discount != null" :src="'/storage/'+Item.images[0].image" :alt="Item.name" class="product-image" />
-            <img v-else :src="'/storage/'+Item.Icon" :alt="Item.name" class="product-image" style="border-top-left-radius: 10px; border-top-right-radius: 10px;"/>
+        <div v-if="Item.discount != null" class="discount">{{ Item.discount + '% OFF' }}</div>
+        <a :href="$router.resolve({ name: 'ProductPage', params: { product: Item.id } }).href" class="product-link">
+            <img v-if="Item.discount != null" :src="'/storage/' + Item.images[0].image" :alt="Item.name"
+                class="product-image" />
+            <img v-else :src="'/storage/' + Item.Icon" :alt="Item.name" class="product-image"
+                style="border-top-left-radius: 10px; border-top-right-radius: 10px;" />
             <div class="product-info">
                 <h3 class="product-name">{{ Item.name }}</h3>
                 <div class="prices">
-                    <span v-if="Item.discount != null" class="original-price">{{ 'R$ '+Item.price }}</span>
-                    <span class="discounted-price">{{'R$ '+(Item.price-(Item.price*(1*(Item.discount/100)))).toFixed(2) }}</span>
+                    <span v-if="Item.discount != null" class="original-price">{{ 'R$ ' + Item.price }}</span>
+                    <span class="discounted-price">{{ 'R$ ' + (Item.price - (Item.price * (1 * (Item.discount / 100)))).toFixed(2)
+                        }}</span>
                 </div>
                 <div class="installments">{{ Item.installment }}</div>
 
             </div>
         </a>
         <div class="buttons-container">
-            <div  class="buttons-div">
+            <div class="buttons-div">
                 <button class="buy-button">COMPRAR</button>
                 <button v-on:click="addToCart(Item.id)" class="cart-button">ADICIONAR AO CARRINHO</button>
             </div>
         </div>
-        
-        
+
+
 
     </div>
 </template>
@@ -31,12 +34,28 @@
 import axios from "axios";
 export default {
     props: ['Item'],
-    methods:{
-        addToCart: async function (item){
+    methods: {
+        addToCart: async function (item) {
             const _this = this
             await axios({
-                method: 'get',
-                url: `/api/cart/add?item=${item}`
+                method: 'post',
+                url: `/api/cart/add?id=${item}`
+            }).then((response) => {
+                if (!localStorage.getItem('cart')) {
+                    const cart = [{ ...response.data, quantity: 1 }];
+                    localStorage.setItem('cart', JSON.stringify(cart));
+                } else {
+                    let tempLocalStorage = JSON.parse(localStorage.getItem('cart'));
+                    const productIndex = tempLocalStorage.findIndex(element => element.product_id === response.data.product_id);
+
+                    if (productIndex !== -1) {
+                        tempLocalStorage[productIndex].quantity += 1;
+                    } else {
+                        tempLocalStorage.push({ ...response.data, quantity: 1 });
+                    }
+
+                    localStorage.setItem('cart', JSON.stringify(tempLocalStorage));
+                }
             })
         }
     }
@@ -45,19 +64,21 @@ export default {
 
 
 <style scoped>
-.prices{
+.prices {
     display: flex;
     flex-direction: column;
     justify-content: center;
     text-wrap: nowrap;
     font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif
 }
-.buttons-container{
+
+.buttons-container {
     display: flex;
     flex-direction: column;
     justify-content: flex-end;
     height: 100%;
 }
+
 .buttons-div {
     display: flex;
 }
@@ -111,7 +132,8 @@ export default {
 .installments {
     margin-bottom: 2.5em;
 }
-.discount{
+
+.discount {
     color: #fafafa;
     background-color: #000;
     border-top-left-radius: 10px;
