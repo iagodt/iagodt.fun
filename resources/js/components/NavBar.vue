@@ -34,16 +34,16 @@
         <div class="cart-content">
           <div class="cart-itens" v-if="Cart.length > 0">
             <div v-for="item in Cart" class="cart-content-item">
-              <img :src="'/storage/'+item[0].images[0].image" class="cart-image">
+              <img :src="'/storage/'+item.images[0].image" class="cart-image">
               <div class="cart-item-info">
-                <div class="title">{{item[0].name}}</div>
+                <div class="title">{{item.name}}</div>
                 <div class="prices">
-                  <div v-if="item[0].discount != null" class="price">R$ {{ (item[0].price-(item[0].price*(1*(item[0].discount/100)))).toFixed(2) }}</div>
-                  <div v-else class="price">R$ {{ item[0].price.toFixed(2) }}</div>
+                  <div v-if="item.discount != null" class="price">R$ {{ (item.price-(item.price*(1*(item.discount/100)))).toFixed(2) }}</div>
+                  <div v-else class="price">R$ {{ item.price.toFixed(2) }}</div>
                 </div>
                 
               </div>
-              <span id="delete-item" v-on:click="deleteItemCart(item[0].id)" class="material-symbols-outlined">delete</span>
+              <span id="delete-item" v-on:click="deleteItemCart(item.id)" class="material-symbols-outlined">delete</span>
             </div>
           </div>
           <div class="cart-empty" v-else>
@@ -139,8 +139,8 @@ methods:{
     let cartDiscount = 0;
 
     this.Cart.forEach(element => {
-        const price = parseFloat(element[0].price) || 0;
-        const discount = parseFloat(element[0].discount) || 0;
+        const price = parseFloat(element.price) || 0;
+        const discount = parseFloat(element.discount) || 0;
         const discountValue = price * (discount / 100);
 
         cartPrice += price;

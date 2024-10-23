@@ -18,9 +18,9 @@ Route::group(['middleware' => 'JWTAuth'], function () {
     //rotas com jwtAuth
     Route::get('auth/google/login', [AuthorizationController::class, 'googleLogin']);
     
-    Route::get('api/usercart/add', [CartController::class, 'userAdd']);
+    Route::post('api/usercart/add', [CartController::class, 'userAdd']);
     Route::get('api/usercart/get', [CartController::class, 'userGet']);
-    Route::get('api/usercart/remove', [CartController::class, 'userRemove']);
+    Route::post('api/usercart/remove', [CartController::class, 'userRemove']);
 });
 
 Route::get('api/attributes/item', [AttributesController::class, 'getItem']);

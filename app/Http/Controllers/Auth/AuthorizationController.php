@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Auth;
 
+use App\Models\carts;
 use App\Models\User;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
@@ -18,6 +19,8 @@ class AuthorizationController extends Controller{
             'email' => $request->email,
             'password' => bcrypt($request->password)
         ]);
+
+        Carts::create(['user_id' => $user->id]);
 
         $token = JWTAuth::fromUser($user);
 
