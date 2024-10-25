@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Auth;
 
 use App\Http\Controllers\Controller;
+use App\Models\carts;
 use App\Models\User;
 use Exception;
 use Hash;
@@ -30,7 +31,8 @@ class GoogleController extends Controller{
                     'password' => Hash::make(Str::random(16)),
                     //add gid
                 ]); 
-
+                
+                carts::create(['user_id' => $user->id]);
             }
             else{
                 // adicionar att gid

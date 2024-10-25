@@ -19,7 +19,8 @@ return Application::configure(basePath: dirname(__DIR__))
             'api/cart/add',
             'api/cart/getItens',
             'api/usercart/add',
-            'api/usercart/remove'
+            'api/usercart/remove',
+            'api/usercart/sync'
         ]); 
         $middleware->group('JWTAuth',[authJwt::class]);
     })

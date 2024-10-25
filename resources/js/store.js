@@ -39,6 +39,13 @@ const store = createStore({
           localStorage.setItem('token', data.Token);
           // Disparar a mutação setUser para atualizar o estado
           context.commit('setUser', data.user);
+
+          await fetch(`/api/usercart/sync?cart=${localStorage.cart}`,{
+            method: 'post',
+            headers: {Authorization: `Bearer ${data.Token}`}
+          })
+
+
         } else {
           console.log('erro de login')
           // Tratar erros de login
@@ -51,6 +58,7 @@ const store = createStore({
       }
     },
     logout(context) {
+      localStorage.removeItem('cart')
       localStorage.removeItem('token')
       context.commit('logout')
     },
@@ -68,6 +76,11 @@ const store = createStore({
         localStorage.setItem('token', data.Token);
         // Disparar a mutação setUser para atualizar o estado
         context.commit('setUser', data.user);
+
+        await fetch(`/api/usercart/sync?cart=${localStorage.cart}`,{
+          method: 'post',
+          headers: {Authorization: `Bearer ${data.Token}`}
+        })
       }
       
 

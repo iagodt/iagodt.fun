@@ -21,6 +21,7 @@ Route::group(['middleware' => 'JWTAuth'], function () {
     Route::post('api/usercart/add', [CartController::class, 'userAdd']);
     Route::get('api/usercart/get', [CartController::class, 'userGet']);
     Route::post('api/usercart/remove', [CartController::class, 'userRemove']);
+    Route::post('api/usercart/sync', [CartController::class, 'userSync']);
 });
 
 Route::get('api/attributes/item', [AttributesController::class, 'getItem']);

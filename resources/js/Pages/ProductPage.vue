@@ -193,27 +193,39 @@ export default {
 
     },
     methods: {
-        async addCart(){
-            await axios({
-                method: 'post',
-                url: `/api/cart/add?id=${this.ItemData.id}&quantity=${this.quantity}`
-            }).then((response)=>{
-                if (!localStorage.getItem('cart')) {
-                    const cart = [{ ...response.data, quantity: this.quantity }];
-                    localStorage.setItem('cart', JSON.stringify(cart));
-                } else {
-                    let tempLocalStorage = JSON.parse(localStorage.getItem('cart'));
-                    const productIndex = tempLocalStorage.findIndex(element => element.product_id === response.data.product_id);
-
-                    if (productIndex !== -1) {
-                        tempLocalStorage[productIndex].quantity += this.quantity;
-                    } else {
-                        tempLocalStorage.push({ ...response.data, quantity: this.quantity });
+        async addCart() {
+            if (JSON.parse(localStorage.vuex).isAuthenticated) {
+                await axios({
+                    method: 'post',
+                    url: `/api/usercart/add?product_id=${this.ItemData.id}`,
+                    headers: {
+                        'Authorization': 'Bearer ' + localStorage.token
                     }
+                }).then((response) => {
+                    // aqui vc da uma polida e coloca uns popup noticacao esses frufru pra avisar que o item ja esta no carrinho :)
+                })
+            } else {
+                await axios({
+                    method: 'post',
+                    url: `/api/cart/add?id=${this.ItemData.id}&quantity=${this.quantity}`
+                }).then((response) => {
+                    if (!localStorage.getItem('cart')) {
+                        const cart = [{ ...response.data, quantity: this.quantity }];
+                        localStorage.setItem('cart', JSON.stringify(cart));
+                    } else {
+                        let tempLocalStorage = JSON.parse(localStorage.getItem('cart'));
+                        const productIndex = tempLocalStorage.findIndex(element => element.product_id === response.data.product_id);
 
-                    localStorage.setItem('cart', JSON.stringify(tempLocalStorage));
-                }
-            })
+                        if (productIndex !== -1) {
+                            tempLocalStorage[productIndex].quantity += this.quantity;
+                        } else {
+                            tempLocalStorage.push({ ...response.data, quantity: this.quantity });
+                        }
+
+                        localStorage.setItem('cart', JSON.stringify(tempLocalStorage));
+                    }
+                })
+            }
         },
 
         async getAttributes(){

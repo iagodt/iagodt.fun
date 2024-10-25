@@ -10,7 +10,8 @@
                 <h3 class="product-name">{{ Item.name }}</h3>
                 <div class="prices">
                     <span v-if="Item.discount != null" class="original-price">{{ 'R$ ' + Item.price }}</span>
-                    <span class="discounted-price">{{ 'R$ ' + (Item.price - (Item.price * (1 * (Item.discount / 100)))).toFixed(2)
+                    <span class="discounted-price">{{ 'R$ ' + (Item.price - (Item.price * (1 * (Item.discount /
+                        100)))).toFixed(2)
                         }}</span>
                 </div>
                 <div class="installments">{{ Item.installment }}</div>
@@ -36,27 +37,38 @@ export default {
     props: ['Item'],
     methods: {
         addToCart: async function (item) {
-            const _this = this
-            await axios({
-                method: 'post',
-                url: `/api/cart/add?id=${item}`
-            }).then((response) => {
-                if (!localStorage.getItem('cart')) {
-                    const cart = [{ ...response.data, quantity: 1 }];
-                    localStorage.setItem('cart', JSON.stringify(cart));
-                } else {
-                    let tempLocalStorage = JSON.parse(localStorage.getItem('cart'));
-                    const productIndex = tempLocalStorage.findIndex(element => element.product_id === response.data.product_id);
-
-                    if (productIndex !== -1) {
-                        tempLocalStorage[productIndex].quantity += 1;
-                    } else {
-                        tempLocalStorage.push({ ...response.data, quantity: 1 });
+            if (JSON.parse(localStorage.vuex).isAuthenticated) {
+                await axios({
+                    method: 'post',
+                    url: `/api/usercart/add?product_id=${item}`,
+                    headers: {
+                        'Authorization': 'Bearer ' + localStorage.token
                     }
+                }).then((response) => {
+                    // aqui vc da uma polida e coloca uns popup noticacao esses frufru pra avisar que o item ja esta no carrinho :)
+                })
+            } else {
+                await axios({
+                    method: 'post',
+                    url: `/api/cart/add?id=${item}`
+                }).then((response) => {
+                    if (!localStorage.getItem('cart')) {
+                        const cart = [{ ...response.data, quantity: 1 }];
+                        localStorage.setItem('cart', JSON.stringify(cart));
+                    } else {
+                        let tempLocalStorage = JSON.parse(localStorage.getItem('cart'));
+                        const productIndex = tempLocalStorage.findIndex(element => element.product_id === response.data.product_id);
 
-                    localStorage.setItem('cart', JSON.stringify(tempLocalStorage));
-                }
-            })
+                        if (productIndex !== -1) {
+                            tempLocalStorage[productIndex].quantity += 1;
+                        } else {
+                            tempLocalStorage.push({ ...response.data, quantity: 1 });
+                        }
+
+                        localStorage.setItem('cart', JSON.stringify(tempLocalStorage));
+                    }
+                })
+            }
         }
     }
 }

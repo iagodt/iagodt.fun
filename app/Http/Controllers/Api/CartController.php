@@ -48,7 +48,7 @@ class CartController extends Controller{
             // Decodificar e validar o JSON do carrinho
             $cart = json_decode($request->cart, true);
             if (json_last_error() !== JSON_ERROR_NONE || !is_array($cart)) {
-                return response()->json(['error' => 'Carrinho inválido'], 400);
+                return response()->json([], 200);
             }
 
             // Extrair os IDs dos produtos
@@ -140,7 +140,7 @@ class CartController extends Controller{
 
             // Verificar se o carrinho tem itens
             if ($itensOnCart->isEmpty()) {
-                return response()->json(['message' => 'O carrinho está vazio'], 200);
+                return response()->json([], 200);
             }
 
             // Criar um array de itens do carrinho
@@ -208,5 +208,47 @@ class CartController extends Controller{
         } catch (\Exception $e) {
             return response()->json(['error' => 'Ocorreu um erro ao remover o produto: ' . $e->getMessage()], 500);
         }
+    }
+
+    public function userSync(Request $request){
+        // Recupera o usuário autenticado via JWT
+        $user = JWTAuth::parseToken()->authenticate();
+    
+        // Verifica se o usuário tem um carrinho existente na tabela 'carts'
+        $cart = carts::where('user_id', $user->id)->first();
+    
+        // Caso o usuário não tenha um carrinho, cria um novo
+        if (!$cart) {
+            $cart = carts::create(['user_id' => $user->id]);
+        }
+    
+        // Verifica se o carrinho do usuário já tem itens na tabela 'cart_items'
+        $cartItems = cart_itens::where('cart_id', $cart->id)->count();
+    
+        // Se o carrinho já tem itens, não faz nada
+        if ($cartItems > 0) {
+            return response()->json(['message' => 'O carrinho já possui itens. Nenhuma alteração foi feita.']);
+        }
+    
+        // Caso o request contenha itens no carrinho não autenticado
+        $items = $request->cart;
+
+        $items = json_decode($items, true);
+    
+        // Verifica se o array de itens está presente e não está vazio
+        if (!empty($items)) {
+            // Itera sobre os itens do request e adiciona ao carrinho
+            foreach ($items as $item) {
+                cart_itens::create([
+                    'cart_id' => $cart->id,
+                    'product_id' => $item['product_id'],
+                    'quantity' => $item['quantity']
+                ]);
+            }
+            return response()->json(['message' => 'Itens adicionados ao carrinho.']);
+        }
+    
+        // Caso o carrinho não autenticado esteja vazio ou undefined
+        return response()->json(['message' => 'Nenhum item foi adicionado, o carrinho não autenticado está vazio.']);
     }
 }

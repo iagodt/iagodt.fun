@@ -20,7 +20,7 @@ class AuthorizationController extends Controller{
             'password' => bcrypt($request->password)
         ]);
 
-        Carts::create(['user_id' => $user->id]);
+        carts::create(['user_id' => $user->id]);
 
         $token = JWTAuth::fromUser($user);
 
