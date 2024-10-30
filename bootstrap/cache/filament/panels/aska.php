@@ -13,6 +13,10 @@
     'app.filament.resources.highlights-resource.pages.create-highlights' => 'App\\Filament\\Resources\\HighlightsResource\\Pages\\CreateHighlights',
     'app.filament.resources.highlights-resource.pages.edit-highlights' => 'App\\Filament\\Resources\\HighlightsResource\\Pages\\EditHighlights',
     'app.filament.resources.highlights-resource.pages.list-highlights' => 'App\\Filament\\Resources\\HighlightsResource\\Pages\\ListHighlights',
+    'app.filament.resources.order-item-resource.relation-managers.orders-relation-manager' => 'App\\Filament\\Resources\\OrderItemResource\\RelationManagers\\OrdersRelationManager',
+    'app.filament.resources.orders-resource.pages.create-orders' => 'App\\Filament\\Resources\\OrdersResource\\Pages\\CreateOrders',
+    'app.filament.resources.orders-resource.pages.edit-orders' => 'App\\Filament\\Resources\\OrdersResource\\Pages\\EditOrders',
+    'app.filament.resources.orders-resource.pages.list-orders' => 'App\\Filament\\Resources\\OrdersResource\\Pages\\ListOrders',
     'app.filament.resources.products-resource.pages.create-products' => 'App\\Filament\\Resources\\ProductsResource\\Pages\\CreateProducts',
     'app.filament.resources.products-resource.pages.edit-products' => 'App\\Filament\\Resources\\ProductsResource\\Pages\\EditProducts',
     'app.filament.resources.products-resource.pages.list-products' => 'App\\Filament\\Resources\\ProductsResource\\Pages\\ListProducts',
@@ -55,6 +59,7 @@
     '/home/iagodt/htdocs/iagodt.fun/app/Filament/Resources/CarouselBannersResource.php' => 'App\\Filament\\Resources\\CarouselBannersResource',
     '/home/iagodt/htdocs/iagodt.fun/app/Filament/Resources/CategoriesResource.php' => 'App\\Filament\\Resources\\CategoriesResource',
     '/home/iagodt/htdocs/iagodt.fun/app/Filament/Resources/HighlightsResource.php' => 'App\\Filament\\Resources\\HighlightsResource',
+    '/home/iagodt/htdocs/iagodt.fun/app/Filament/Resources/OrdersResource.php' => 'App\\Filament\\Resources\\OrdersResource',
     '/home/iagodt/htdocs/iagodt.fun/app/Filament/Resources/ProductsResource.php' => 'App\\Filament\\Resources\\ProductsResource',
   ),
   'resourceDirectories' => 

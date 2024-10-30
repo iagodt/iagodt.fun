@@ -10,6 +10,7 @@ import store from './store';
 import RecoveryPage from './Pages/recoveryPage.vue';
 import PasswordReset from './Pages/passwordReset.vue';
 import Redirectpage from './components/redirectpage.vue';
+import CheckoutShippingPage from './Pages/checkoutShippingPage.vue';
 const routes = [
     {
       path: '/',
@@ -48,6 +49,11 @@ const routes = [
       path: '/auth/google-redirect',
       name: 'googleRedirect',
       component: Redirectpage
+    },
+    {
+      path:'/checkout/shipping',
+      name:'CheckoutPage',
+      component: CheckoutShippingPage
     },
     {name: 'ProductPage' ,path: '/product/:product', component: ProductPage},
     {name: 'CategoryPage' ,path: '/category/:category', component: CategoryPage},
